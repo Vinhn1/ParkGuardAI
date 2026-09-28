@@ -1,0 +1,65 @@
+# =========================
+# Android / Gradle
+# =========================
+
+*.iml
+.gradle/
+local.properties
+
+/build/
+/app/build/
+/captures/
+
+.externalNativeBuild/
+.cxx/
+
+
+# =========================
+# Android Studio / IntelliJ
+# =========================
+
+.idea/
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+
+# =========================
+# Local AI tools
+# =========================
+
+.agents/
+.gemini/
+GEMINI.md
+
+
+# =========================
+# Secrets / Environment
+# =========================
+
+.env
+.env.*
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+
+
+# =========================
+# Operating System
+# =========================
+
+.DS_Store
+Thumbs.db
+
+
+# =========================
+# Temporary files
+# =========================
+
+*.log
+*.tmp
+*.temp
