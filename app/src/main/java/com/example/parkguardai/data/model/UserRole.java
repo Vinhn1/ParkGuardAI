@@ -18,7 +18,12 @@ public enum UserRole {
      * Bảo vệ có quyền ghi nhận, xác minh và quản lý
      * các vi phạm trong phạm vi được cấp quyền.
      */
-    SECURITY_GUARD
+    SECURITY_GUARD,
+    /**
+     * Quản trị viên thao tác trong ứng dụng Android theo các quyền cụ thể
+     * do nguồn đáng tin cậy cấp. Giá trị enum không tự cấp quyền truy cập.
+     */
+    ADMIN
 }
 
 

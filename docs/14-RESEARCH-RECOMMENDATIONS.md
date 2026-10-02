@@ -1,0 +1,46 @@
+# 14 — Nghiên cứu và phương án cần lựa chọn
+
+> Khảo sát nguồn chính thức ngày 2026-10-02. ADR-001..005 và GPS ảnh chính đã được duyệt ở mức kiến trúc/nghiệp vụ; các **chi tiết `OPEN`/`PROPOSED`** dưới đây chưa được duyệt triển khai. Mức chi phí là ước tính **độ phức tạp triển khai/vận hành tương đối** (`Thấp/Trung bình/Cao`), không phải báo giá. Trạng thái mã nguồn tại [13](13-CURRENT-PROJECT-STATUS.md); quyết định tại [15](15-DECISION-LOG.md).
+
+## Những lựa chọn kiến trúc chính
+
+| Quyết định | Phương án và lý do cân nhắc | Chi phí/rủi ro, tiêu chí chọn |
+|---|---|---|
+| DEC-001 `APPROVED`; DEC-010/011 `OPEN` | Firebase Auth + Firestore + Cloud Storage được chọn; phần còn mở là **Cloud Functions hay backend tin cậy khác** cho cấp quyền, claim biển số, audit và projection, cùng project/vùng/ngân sách triển khai. | Phí theo đọc/ghi/lưu trữ/băng thông; Rules, transaction và vùng dữ liệu phải được thiết kế/test. Không tạo project thật ở giai đoạn tài liệu. [Firebase billing](https://firebase.google.com/docs/firestore/pricing), [Rules](https://firebase.google.com/docs/rules/basics). |
+| DEC-002 `APPROVED`; DEC-012 `OPEN` | Google ML Kit Text Recognition được chọn để thử nghiệm; **bundled hoặc unbundled** còn cần chọn bằng pilot. OCR tùy biến/server chỉ là phương án dự phòng cần quyết định mới. | Bundled tăng APK nhưng sẵn; unbundled cần tải ban đầu. Đo full-plate accuracy riêng biển xe máy hai hàng, latency và tỷ lệ sửa. [ML Kit Android](https://developers.google.com/ml-kit/vision/text-recognition/v2/android), [ngôn ngữ](https://developers.google.com/ml-kit/vision/text-recognition/v2/languages). |
+| DEC-003 `APPROVED` | ADMIN nằm trong ứng dụng Android, UI/navigation/grant riêng; enum đã có ADMIN nhưng nghiệp vụ quyền chưa có. | Cần bảo vệ dữ liệu nhạy cảm, không cho Android tự cấp quyền; chi tiết quyền theo nhiệm vụ cần test. |
+| DEC-004 `APPROVED`; DEC-013 `OPEN` | Xác minh xe thủ công sau khi sinh viên có Auth xác minh và đăng ký ≥1 xe; request PENDING, ADMIN/nhân sự được cấp quyền duyệt. | Công vận hành, PII trong chứng cứ; chốt tài liệu kiểm chứng tối thiểu và quy trình tranh chấp/chuyển nhượng. |
+| DEC-005 `APPROVED` | Bản đầu online-first, không queue đồng bộ nâng cao; kiểm kết nối, không báo thành công nếu chỉ có cache/local write, retry idempotent. | Firestore Android có cache mặc định, đồng bộ có thể last-write-wins; transaction fail offline. Cần test `fromCache`/pending writes và xác nhận server. [Firestore offline](https://firebase.google.com/docs/firestore/manage-data/enable-offline), [transactions](https://firebase.google.com/docs/firestore/manage-data/transactions). |
+| DEC-006 Lưu giữ/xóa | **A. Chính sách thời hạn theo loại dữ liệu**, **B. giữ vô thời hạn** (rủi ro cao và chưa có căn cứ). | A cần nghiệp vụ xóa/ẩn danh/backup và phê duyệt pháp lý; B tăng rủi ro PII và chi phí. Không ấn định số ngày khi chưa có chính sách của trường và rà soát pháp lý. |
+| DEC-007 `APPROVED`; DEC-007B `OPEN` | Bảng giá Firebase ghi Phone Auth trên Spark là **không áp dụng**; giới hạn Auth ghi SMS mã xác minh chỉ dùng trên Blaze. Theo lựa chọn của người dùng, bản đầu dùng email/mật khẩu và liên kết xác minh email; phone là liên hệ tùy chọn, chưa xác minh. Mã SV còn chờ nguồn đối chiếu. | Blaze tính phí SMS theo bảng giá áp dụng; hạn mức miễn phí nếu có trên Blaze không biến Spark thành gói hỗ trợ SMS. Không tự tạo project, bật billing hoặc mô phỏng OTP bằng mã lưu Firestore. [Firebase pricing](https://firebase.google.com/pricing), [Auth limits](https://firebase.google.com/docs/auth/limits), [Firebase email verification](https://firebase.google.com/docs/auth/android/manage-users). |
+| DEC-008/008A GPS | Tự động lấy fix foreground **khi chụp ảnh chính** đã duyệt. Còn mở: ngưỡng sai số/tuổi fix/chênh thời gian/timeout, precise/approximate, fallback thủ công; Fused Location Provider là phương án nghiên cứu. | Không dùng cache cũ hoặc vị trí lúc lưu; fix có thể không có/không đạt. [Fused current location](https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderClient), [Android permissions](https://developer.android.com/develop/sensors-and-location/location/permissions). |
+
+## Đề xuất bổ sung theo vấn đề
+
+Mỗi dòng có: vấn đề → giải pháp → lợi ích → rủi ro → ưu tiên → độ phức tạp → phụ thuộc → cần phê duyệt. “Có” nghĩa phải hỏi người dùng trước khi **triển khai**, không phải trước khi lưu đề xuất trong tài liệu.
+
+| ID/vấn đề | Giải pháp đề xuất và lợi ích | Rủi ro | Ưu tiên; chi phí; phụ thuộc; phê duyệt |
+|---|---|---|---|
+| REC-01 Quyền sử dụng xe khó chứng minh | `VehicleLink` có trạng thái, khoảng hiệu lực, người duyệt và căn cứ tối thiểu; tránh gán sai sinh viên | Công xét duyệt, lưu chứng cứ PII | P0; Cao; DEC-004/006, backend; **Có** |
+| REC-02 Biển số chưa đăng ký | Cho hồ sơ `vehicleId` rỗng, giữ plate cuối do bảo vệ rà, hàng chờ liên kết thủ công; không mất bằng chứng | Hồ sơ chưa thể hiện cho sinh viên cho đến khi kiểm quyền | P0; Trung bình; schema/quyền; **Có** |
+| REC-03 Trùng biển số/hai tài khoản | Phát hiện `plateCanonical` trùng, khóa cấp quyền tự động và giải quyết xung đột có audit; ngăn lộ chéo | Có thể chặn nhầm xe hợp lệ cùng biển do lỗi nhập/plate giả | P0; Cao; DEC-004, ràng buộc nguyên tử; **Có** |
+| REC-04 Chuyển nhượng/thay xe | Đóng `validTo`, tạo link mới; hồ sơ cũ giữ liên kết theo thời gian | Chính sách quyền xem quá khứ phức tạp | P0; Trung bình; REC-01, DEC-004; **Có** |
+| REC-05 Hồ sơ cần chỉnh sửa | Lưu phiên bản/sự kiện sửa, lý do, người duyệt; bảo toàn ảnh gốc và lịch sử | Chi phí lưu trữ/audit, UX nhiều bước | P0; Trung bình; quyền, schema; **Có** |
+| REC-06 Audit log | Ghi sự kiện tạo/sửa/duyệt/xuất/xóa với actor đáng tin và request ID; truy nguyên tranh chấp | Log chứa PII nếu thiết kế quá rộng | P0; Trung bình; backend, DEC-006; **Có** |
+| REC-07 Mất Internet | Bản đầu chỉ kiểm kết nối/thông báo và retry idempotent; bản nháp mã hóa/queue nâng cao để giai đoạn sau | Đồng bộ trùng/xung đột, thiết bị mất nếu mở rộng | P2 cho queue; Cao; ADR-005, storage local; **Có** |
+| REC-08 Ảnh bằng chứng | Kho riêng, object key không public, hash, quyền đọc theo hồ sơ, lifecycle xóa; giữ bằng chứng nguyên vẹn | Chi phí storage/băng thông, ảnh người xung quanh | P0; Cao; DEC-001/006, quyền; **Có** |
+| REC-09 Xóa tài khoản/dữ liệu | Workflow xác minh yêu cầu, tách dữ liệu cần giữ và có thể xóa/ẩn danh; đáp ứng quyền riêng tư | Xóa sớm phá bằng chứng, xóa thiếu ở backup | P1; Cao; DEC-006/pháp chế; **Có** |
+| REC-10 OCR biển xe máy Việt Nam | Bộ test thực địa cân bằng 1/2 dòng, ngày/đêm, góc/mờ; thử ML Kit bundled/unbundled, so raw/final và lỗi hai hàng | Thu ảnh cần quyền và nhãn tốt; metric dễ lệch nếu chọn ảnh dễ | P0; Trung bình; ADR-002, nguồn ảnh; **Có** |
+| REC-15 GPS lúc chụp | Snapshot vị trí theo ảnh chính, kiểm timestamp/sai số và trạng thái; giảm gán sai hiện trường | Fused có cache/độ chính xác biến động, PII vị trí và nhiều ảnh | P0; Trung bình; DEC-008A, CameraX, quyền foreground; **Có** cho chi tiết triển khai |
+| REC-11 Hiệu năng YOLO11n | Đọc tensor thật, benchmark CPU/delegate trên thiết bị mục tiêu; chọn tần suất/độ phân giải từ đo đạc | Tối ưu có thể giảm recall; khác biệt máy | P0; Trung bình; model metadata, thiết bị; **Có** |
+| REC-12 Mở rộng hệ thống | Phân trang, chỉ mục theo quyền/thời gian, đo read/write/ảnh và quota; tránh tăng chi phí bất ngờ | Tối ưu quá sớm tạo phức tạp | P1; Trung bình; DEC-001, pilot traffic; **Có** |
+| REC-13 Pháp lý và bảo vệ PII | Pháp chế trường rà thông báo, cơ sở xử lý, nhà cung cấp, vị trí dữ liệu và thời hạn; giảm rủi ro vận hành | Chậm tiến độ, cần phối hợp nhiều bên | P0; Cao về phối hợp; DEC-001/006, pháp chế; **Có** |
+| REC-14 Yêu cầu xem xét lại | Form đề nghị và luồng phản hồi tách hồ sơ gốc; tăng công bằng cho sinh viên | Tăng tải xử lý và nghĩa vụ phản hồi | P2 `PROPOSED`; Trung bình; chính sách xử lý; **Có** |
+
+## Bằng chứng và giới hạn nghiên cứu
+
+- [Ultralytics LiteRT](https://docs.ultralytics.com/integrations/litert) mô tả định dạng `.tflite` và hỗ trợ YOLO11 detect; không chứng minh asset trong repository có đúng output/độ chính xác như tài liệu chung. Không thay runtime/export hoặc nâng dependency chỉ vì tên LiteRT mới.
+- [Android CameraX ImageAnalysis](https://developer.android.com/media/camera/camerax/analyze) yêu cầu đóng `ImageProxy` và quản lý frame; lựa chọn kích thước/strategy phải đo trên thiết bị.
+- [ML Kit Text Recognition v2](https://developers.google.com/ml-kit/vision/text-recognition/v2/android) hỗ trợ Latin on-device nhưng không có benchmark riêng của ParkGuard; cần pilot.
+- [Firebase Security Rules](https://firebase.google.com/docs/rules/basics) và [test Rules](https://firebase.google.com/docs/rules/unit-tests) là điều kiện của ADR-001; Firestore/Storage hiện chưa có trong repository. [Custom claims](https://firebase.google.com/docs/auth/admin/custom-claims) chỉ do môi trường đặc quyền đặt.
+- [Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15](https://vanban.chinhphu.vn/?docid=214590&pageid=27160) và [Nghị định 13/2023/NĐ-CP](https://vanban.chinhphu.vn/default.aspx?docid=207759&pageid=27160) là nguồn chính thức cần rà soát theo thời điểm 2026; tài liệu này không xác định thay nghĩa vụ pháp lý cụ thể.

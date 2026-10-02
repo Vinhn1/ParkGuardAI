@@ -14,6 +14,7 @@ public class User {
     private String email;
     private UserRole role;
 
+
     /**
      * Constructor rỗng hỗ trợ việc khởi tạo User trước khi
      * gán dữ liệu và giúp tương thích với các cơ chế ánh xạ

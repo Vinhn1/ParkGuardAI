@@ -8,17 +8,26 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.parkguardai.databinding.*;
+
+/**
+ * Activity gốc của ứng dụng ParkGuard.
+ *
+ * Activity này chỉ đóng vai trò chứa NavHost để quản lý các màn hình Fragment.
+ * Logic nghiệp vụ được đặt ở các lớp và module phù hợp thay vì xử lý trực tiếp tại đây.
+ */
+
 public class MainActivity extends AppCompatActivity {
+
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Cho phép các màn hình như Camera và Map sử dụng toàn bộ vùng hiển thị.
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
     }
 }

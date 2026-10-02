@@ -33,6 +33,8 @@ local.properties
 
 .agents/
 .gemini/
+.codex/
+.aws/
 GEMINI.md
 
 
@@ -46,6 +48,15 @@ GEMINI.md
 *.keystore
 keystore.properties
 secrets.properties
+google-services.json
+firebase-adminsdk-*.json
+*service-account*.json
+*serviceAccount*.json
+*.pem
+*.p12
+*.p8
+.firebase/
+firebase-debug.log
 
 
 # =========================

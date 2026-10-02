@@ -7,6 +7,10 @@ appcompat = "1.8.0"
 material = "1.14.0"
 activity = "1.13.0"
 constraintlayout = "2.2.2"
+# Phiên bản AndroidX Navigation Component.
+navigation = "2.9.7"
+tensorflowLite = "2.17.0"
+firebaseBom = "34.19.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -17,6 +21,13 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
+# Navigation Component dùng để quản lý điều hướng giữa các màn hình Fragment.
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigation" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigation" }
+# Chạy mô hình TensorFlow Lite trực tiếp trên Android.
+tensorflow-lite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflowLite" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
