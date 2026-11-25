@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="@dimen/pg_page_padding">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/backButton" style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content" android:layout_height="@dimen/pg_touch_target"
+            android:text="@string/action_back" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pg_space_large"
+            android:text="@string/student_settings_title"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+            android:textColor="@color/pg_on_surface" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pg_space_small"
+            android:text="@string/student_settings_description"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="@color/pg_on_surface_muted" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/changePasswordButton" style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent" android:layout_height="@dimen/pg_button_height"
+            android:layout_marginTop="@dimen/pg_space_xlarge"
+            android:text="@string/common_change_password_title" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/privacyButton" style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent" android:layout_height="@dimen/pg_button_height"
+            android:layout_marginTop="@dimen/pg_space_small"
+            android:text="@string/common_privacy_title" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/aboutButton" style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent" android:layout_height="@dimen/pg_button_height"
+            android:layout_marginTop="@dimen/pg_space_small"
+            android:text="@string/common_about_title" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/signOutButton" style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent" android:layout_height="@dimen/pg_button_height"
+            android:layout_marginTop="@dimen/pg_space_large"
+            android:text="@string/common_logout_action" />
+    </LinearLayout>
+</ScrollView>

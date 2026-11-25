@@ -1,0 +1,398 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return request.auth != null
+        && request.auth.token.email_verified == true;
+    }
+
+    function verifiedOwner(uid) {
+      return isVerifiedUser() && request.auth.uid == uid;
+    }
+
+    function profilePath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+
+    function firstVehiclePath(uid) {
+      let firstId = 'first_' + uid;
+      return /databases/$(database)/documents/vehicles/$(firstId);
+    }
+
+    function firstRequestPath(uid) {
+      let firstId = 'first_' + uid;
+      return /databases/$(database)/documents/vehicleVerificationRequests/$(firstId);
+    }
+
+    function grantPath(uid) {
+      return /databases/$(database)/documents/accessGrants/$(uid);
+    }
+
+    function isAdmin() {
+      return isVerifiedUser()
+        && exists(grantPath(request.auth.uid))
+        && get(grantPath(request.auth.uid)).data.role == 'ADMIN'
+        && get(grantPath(request.auth.uid)).data.active == true;
+    }
+
+    function isActiveGuard() {
+      return isVerifiedUser()
+        && exists(grantPath(request.auth.uid))
+        && get(grantPath(request.auth.uid)).data.role == 'SECURITY_GUARD'
+        && get(grantPath(request.auth.uid)).data.active == true;
+    }
+
+    function guardInScope(scopeId) {
+      return isActiveGuard()
+        && scopeId in get(grantPath(request.auth.uid)).data.guardScopes;
+    }
+
+    function violationPath(id) {
+      return /databases/$(database)/documents/violations/$(id);
+    }
+
+    function primaryPath(id) {
+      let evidenceId = id + '_primary';
+      return /databases/$(database)/documents/violations/$(id)/evidence/$(evidenceId);
+    }
+
+    // Hồ sơ người dùng (Sinh viên / Bảo vệ / Quản trị viên)
+    match /users/{uid} {
+      allow get: if verifiedOwner(uid) || isActiveGuard() || isAdmin();
+      allow list: if isAdmin();
+      allow create: if (verifiedOwner(uid)
+          && request.resource.data.keys().hasAll([
+            'fullName', 'emailCanonical', 'phoneCanonical', 'accountStatus',
+            'createdAt', 'schemaVersion'])
+          && request.resource.data.keys().hasOnly([
+            'fullName', 'emailCanonical', 'phoneCanonical', 'studentCode',
+            'studentClass', 'accountStatus', 'createdAt', 'schemaVersion'])
+          && request.resource.data.fullName is string
+          && request.resource.data.fullName.size() >= 2
+          && request.resource.data.fullName.size() <= 100
+          && request.resource.data.emailCanonical == request.auth.token.email
+          && request.resource.data.phoneCanonical is string
+          && (request.resource.data.phoneCanonical == ''
+            || request.resource.data.phoneCanonical.matches('^[+]?[0-9]{9,15}$'))
+          && (!('studentCode' in request.resource.data)
+            || (request.resource.data.studentCode is string && request.resource.data.studentCode.size() <= 30))
+          && (!('studentClass' in request.resource.data)
+            || (request.resource.data.studentClass is string && request.resource.data.studentClass.size() <= 30))
+          && request.resource.data.accountStatus == 'ONBOARDING_PENDING'
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.schemaVersion == 1
+          && getAfter(firstVehiclePath(uid)).data.createdBy == uid
+          && getAfter(firstRequestPath(uid)).data.requesterUid == uid)
+        || (isActiveGuard() && request.auth.uid == uid)
+        || isAdmin();
+      allow update: if isAdmin()
+        || (verifiedOwner(uid)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['fullName', 'phoneCanonical', 'studentClass', 'studentCode', 'avatarUrl', 'updatedAt'])
+          && (!('fullName' in request.resource.data)
+            || (request.resource.data.fullName is string
+              && request.resource.data.fullName.size() >= 2
+              && request.resource.data.fullName.size() <= 100))
+          && (!('phoneCanonical' in request.resource.data)
+            || (request.resource.data.phoneCanonical is string
+              && (request.resource.data.phoneCanonical == ''
+                || request.resource.data.phoneCanonical.matches('^[+]?[0-9]{9,15}$'))))
+          && (!('studentCode' in request.resource.data)
+            || (request.resource.data.studentCode is string && request.resource.data.studentCode.size() <= 30))
+          && (!('studentClass' in request.resource.data)
+            || (request.resource.data.studentClass is string && request.resource.data.studentClass.size() <= 30))
+          && (!('avatarUrl' in request.resource.data)
+            || (request.resource.data.avatarUrl is string
+              && request.resource.data.avatarUrl.size() <= 2048
+              && request.resource.data.avatarUrl.matches('^https://res[.]cloudinary[.]com/ds1g5ryn1/image/upload/.+'))));
+      allow delete: if isAdmin();
+    }
+
+    // Phân quyền truy cập vai trò đặc quyền (SECURITY_GUARD / ADMIN)
+    match /accessGrants/{uid} {
+      allow get: if verifiedOwner(uid) || isAdmin();
+      allow list, create, update, delete: if isAdmin();
+    }
+
+    // Phương tiện đăng ký của sinh viên
+    match /vehicles/{vehicleId} {
+      allow get: if isAdmin()
+        || isActiveGuard()
+        || (isVerifiedUser()
+          && (vehicleId == 'first_' + request.auth.uid
+            || (resource != null && resource.data.createdBy == request.auth.uid)));
+      allow list: if isAdmin()
+        || isActiveGuard()
+        || (isVerifiedUser() && resource.data.createdBy == request.auth.uid);
+      allow create: if isAdmin()
+        || (isVerifiedUser()
+          && request.resource.data.keys().hasAll([
+            'plateRaw', 'plateCanonical', 'plateNormVersion', 'type',
+            'createdBy', 'createdAt', 'schemaVersion'])
+          && request.resource.data.keys().hasOnly([
+            'plateRaw', 'plateCanonical', 'plateNormVersion', 'type',
+            'brand', 'model', 'color', 'registrationCardPhotoKey', 'photoObjectKey',
+            'createdBy', 'createdAt', 'schemaVersion'])
+          && request.resource.data.plateRaw is string
+          && request.resource.data.plateRaw.size() >= 5
+          && request.resource.data.plateRaw.size() <= 16
+          && request.resource.data.plateCanonical is string
+          && request.resource.data.plateCanonical.matches('^[0-9A-Z]{5,12}$')
+          && request.resource.data.plateNormVersion == 1
+          && request.resource.data.type in ['MOTORBIKE', 'ELECTRIC_BIKE', 'CAR']
+          && (!('brand' in request.resource.data)
+            || (request.resource.data.brand is string && request.resource.data.brand.size() <= 50))
+          && (!('color' in request.resource.data)
+            || (request.resource.data.color is string && request.resource.data.color.size() <= 50))
+          && (!('registrationCardPhotoKey' in request.resource.data)
+            || (request.resource.data.registrationCardPhotoKey is string && request.resource.data.registrationCardPhotoKey.size() <= 2048))
+          && (!('photoObjectKey' in request.resource.data)
+            || (request.resource.data.photoObjectKey is string && request.resource.data.photoObjectKey.size() <= 2048))
+          && request.resource.data.createdBy == request.auth.uid
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.schemaVersion == 1
+          && ((vehicleId == 'first_' + request.auth.uid
+              && getAfter(profilePath(request.auth.uid)).data.accountStatus == 'ONBOARDING_PENDING'
+              && getAfter(firstRequestPath(request.auth.uid)).data.vehicleId == vehicleId)
+            || (vehicleId != 'first_' + request.auth.uid
+              && exists(profilePath(request.auth.uid)))));
+      allow update, delete: if isAdmin();
+    }
+
+    // Hồ sơ yêu cầu xác minh phương tiện
+    match /vehicleVerificationRequests/{requestId} {
+      allow get: if isAdmin()
+        || isActiveGuard()
+        || (isVerifiedUser()
+          && (requestId == 'first_' + request.auth.uid
+            || (resource != null && resource.data.requesterUid == request.auth.uid)));
+      allow list: if isAdmin()
+        || isActiveGuard()
+        || (isVerifiedUser() && resource.data.requesterUid == request.auth.uid);
+      allow create: if isAdmin()
+        || (isVerifiedUser()
+          && request.resource.data.keys().hasAll([
+            'requesterUid', 'vehicleId', 'requestType', 'status',
+            'requestedAt', 'schemaVersion'])
+          && request.resource.data.keys().hasOnly([
+            'requesterUid', 'vehicleId', 'requestType', 'status',
+            'requestedAt', 'schemaVersion'])
+          && request.resource.data.requesterUid == request.auth.uid
+          && request.resource.data.requestType == 'NEW_REGISTRATION'
+          && request.resource.data.status == 'PENDING'
+          && request.resource.data.requestedAt == request.time
+          && request.resource.data.schemaVersion == 1
+          && ((requestId == 'first_' + request.auth.uid
+              && request.resource.data.vehicleId == 'first_' + request.auth.uid
+              && getAfter(profilePath(request.auth.uid)).data.accountStatus == 'ONBOARDING_PENDING'
+              && getAfter(firstVehiclePath(request.auth.uid)).data.createdBy == request.auth.uid)
+            || (requestId != 'first_' + request.auth.uid
+              && exists(profilePath(request.auth.uid)))));
+      allow update, delete: if isAdmin();
+    }
+
+    // Liên kết sở hữu phương tiện đã xác minh (chỉ Admin tạo/cập nhật khi duyệt)
+    match /vehicleLinks/{linkId} {
+      allow get, list: if isAdmin()
+        || isActiveGuard()
+        || (isVerifiedUser() && resource.data.uid == request.auth.uid);
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Hồ sơ vi phạm bãi xe
+    match /violations/{violationId} {
+      allow get: if isAdmin()
+        || isActiveGuard()
+        || (isVerifiedUser() && resource.data.ownerUid == request.auth.uid);
+      allow list: if isAdmin()
+        || (isActiveGuard() && request.query.limit <= 200)
+        || (isVerifiedUser() && resource.data.ownerUid == request.auth.uid);
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasAll([
+          'guardUid', 'scopeId', 'primaryEvidenceId', 'primaryPublicId',
+          'plateFinal', 'typeCode', 'typeVersion', 'status', 'note',
+          'capturedAt', 'locationAt', 'latitude', 'longitude',
+          'locationAccuracy', 'locationSource', 'locationStatus',
+          'createdAt', 'schemaVersion'])
+        && request.resource.data.keys().hasOnly([
+          'guardUid', 'guardName', 'scopeId', 'primaryEvidenceId', 'primaryPublicId',
+          'primaryEvidenceUrl', 'plateFinal', 'plateCanonical', 'ownerUid',
+          'typeCode', 'typeVersion', 'status', 'note', 'penaltyAmount',
+          'capturedAt', 'locationAt', 'latitude', 'longitude',
+          'locationAccuracy', 'locationSource', 'locationStatus',
+          'createdAt', 'schemaVersion'])
+        && request.resource.data.guardUid == request.auth.uid
+        && request.resource.data.scopeId is string
+        && guardInScope(request.resource.data.scopeId)
+        && request.resource.data.primaryEvidenceId == violationId + '_primary'
+        && request.resource.data.primaryPublicId is string
+        && request.resource.data.primaryPublicId.size() > 0
+        && request.resource.data.plateFinal is string
+        && (request.resource.data.plateFinal.matches('^[0-9A-Z]{5,12}$')
+          || (request.resource.data.plateFinal == ''
+            && request.resource.data.note is string
+            && request.resource.data.note.size() >= 5))
+        && request.resource.data.typeCode in [
+          'PARKING_WRONG_AREA', 'BLOCKING_ENTRANCE', 'NO_PARKING_ZONE', 'OTHER']
+        && request.resource.data.typeVersion == 1
+        && request.resource.data.status == 'PENDING'
+        && request.resource.data.note is string
+        && request.resource.data.note.size() <= 500
+        && request.resource.data.capturedAt is timestamp
+        && request.resource.data.capturedAt <= request.time
+        && request.resource.data.locationAt is timestamp
+        && request.resource.data.locationAt >= request.resource.data.capturedAt - duration.value(5, 's')
+        && request.resource.data.locationAt <= request.resource.data.capturedAt + duration.value(5, 's')
+        && request.resource.data.latitude is number
+        && request.resource.data.latitude >= -90
+        && request.resource.data.latitude <= 90
+        && request.resource.data.longitude is number
+        && request.resource.data.longitude >= -180
+        && request.resource.data.longitude <= 180
+        && request.resource.data.locationAccuracy is number
+        && request.resource.data.locationAccuracy > 0
+        && request.resource.data.locationAccuracy <= 30
+        && request.resource.data.locationSource == 'FUSED_AUTO'
+        && request.resource.data.locationStatus == 'AUTO_ACCEPTED'
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.schemaVersion == 1
+        && getAfter(primaryPath(violationId)).data.publicId == request.resource.data.primaryPublicId;
+      allow update: if isAdmin()
+        || (isVerifiedUser()
+          && resource.data.ownerUid == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['status', 'complaintReason', 'complaintAt'])
+          && request.resource.data.status == 'APPEALED'
+          && request.resource.data.complaintReason is string
+          && request.resource.data.complaintReason.size() >= 5
+          && request.resource.data.complaintReason.size() <= 1000);
+      allow delete: if isAdmin();
+
+      match /evidence/{evidenceId} {
+        allow get, list: if isAdmin()
+          || isActiveGuard()
+          || (isVerifiedUser() && get(violationPath(violationId)).data.ownerUid == request.auth.uid);
+        allow create: if isSignedIn()
+          && request.resource.data.keys().hasAll([
+            'id', 'violationId', 'createdBy', 'secureUrl', 'publicId',
+            'uploadedAt', 'imageType', 'isPrimary', 'capturedAt', 'sha256',
+            'mimeType', 'sizeBytes', 'sourceEvidenceId', 'schemaVersion'])
+          && request.resource.data.keys().hasOnly([
+            'id', 'violationId', 'createdBy', 'secureUrl', 'publicId',
+            'uploadedAt', 'imageType', 'isPrimary', 'capturedAt', 'sha256',
+            'mimeType', 'sizeBytes', 'sourceEvidenceId', 'schemaVersion',
+            'locationAt', 'latitude', 'longitude', 'locationAccuracy',
+            'locationSource', 'locationStatus'])
+          && request.resource.data.id == evidenceId
+          && request.resource.data.violationId == violationId
+          && request.resource.data.createdBy == request.auth.uid
+          && request.resource.data.secureUrl is string
+          && request.resource.data.secureUrl.size() <= 2048
+          && request.resource.data.secureUrl.matches(
+            '^https://res[.]cloudinary[.]com/ds1g5ryn1/image/upload/.+')
+          && request.resource.data.publicId is string
+          && request.resource.data.publicId.size() > 0
+          && request.resource.data.publicId.size() <= 255
+          && request.resource.data.uploadedAt is timestamp
+          && request.resource.data.uploadedAt <= request.time + duration.value(5, 'm')
+          && request.resource.data.capturedAt is timestamp
+          && request.resource.data.sha256 is string
+          && request.resource.data.sha256.matches('^[0-9a-f]{64}$')
+          && request.resource.data.mimeType == 'image/jpeg'
+          && request.resource.data.sizeBytes is number
+          && request.resource.data.sizeBytes > 0
+          && request.resource.data.sizeBytes <= 12582912
+          && request.resource.data.schemaVersion == 1
+          && ((evidenceId == violationId + '_primary'
+               && getAfter(violationPath(violationId)).data.guardUid == request.auth.uid
+               && guardInScope(getAfter(violationPath(violationId)).data.scopeId)
+               && request.resource.data.capturedAt == getAfter(violationPath(violationId)).data.capturedAt
+               && request.resource.data.isPrimary == true
+               && request.resource.data.imageType == 'ORIGINAL'
+               && request.resource.data.sourceEvidenceId == ''
+               && request.resource.data.keys().hasAll([
+                 'locationAt', 'latitude', 'longitude', 'locationAccuracy',
+                 'locationSource', 'locationStatus'])
+               && request.resource.data.locationAt == getAfter(violationPath(violationId)).data.locationAt
+               && request.resource.data.latitude == getAfter(violationPath(violationId)).data.latitude
+               && request.resource.data.longitude == getAfter(violationPath(violationId)).data.longitude
+               && request.resource.data.locationAccuracy == getAfter(violationPath(violationId)).data.locationAccuracy
+               && request.resource.data.locationSource == 'FUSED_AUTO'
+               && request.resource.data.locationStatus == 'AUTO_ACCEPTED')
+            || (evidenceId == violationId + '_crop'
+               && getAfter(violationPath(violationId)).data.guardUid == request.auth.uid
+               && guardInScope(getAfter(violationPath(violationId)).data.scopeId)
+               && request.resource.data.capturedAt == getAfter(violationPath(violationId)).data.capturedAt
+               && request.resource.data.isPrimary == false
+               && request.resource.data.imageType == 'PLATE_CROP'
+               && request.resource.data.sourceEvidenceId == violationId + '_primary'
+               && !request.resource.data.keys().hasAny([
+                 'locationAt', 'latitude', 'longitude', 'locationAccuracy',
+                 'locationSource', 'locationStatus']))
+            || (evidenceId.matches('^' + violationId + '_sup_[0-9a-f]{8}$')
+               && isActiveGuard()
+               && exists(violationPath(violationId))
+               && request.resource.data.isPrimary == false
+               && request.resource.data.imageType == 'SUPPLEMENTAL'
+               && request.resource.data.sourceEvidenceId == violationId + '_primary'));
+        allow update, delete: if false;
+      }
+    }
+
+    // Lịch sử vào/ra bãi xe (chỉ Bảo vệ/Admin ghi; Sinh viên chỉ xem bản ghi của mình)
+    match /parkingHistory/{historyId} {
+      allow get, list: if isAdmin()
+        || isActiveGuard()
+        || (isVerifiedUser() && resource.data.ownerUid == request.auth.uid);
+      allow create, update: if isActiveGuard() || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Thông báo gửi tới sinh viên
+    match /notifications/{notificationId} {
+      allow get, list: if isAdmin()
+        || (isVerifiedUser() && resource.data.recipientUid == request.auth.uid);
+      allow create: if isActiveGuard() || isAdmin();
+      allow update: if isAdmin()
+        || (isVerifiedUser()
+          && resource.data.recipientUid == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['read', 'requiresAction', 'userResponse', 'respondedAt']));
+      allow delete: if isAdmin();
+    }
+
+    // Cảnh báo an ninh realtime cho Bảo vệ & Quản trị viên
+    match /security_alerts/{alertId} {
+      allow get, list, update: if isActiveGuard() || isAdmin();
+      allow create: if isActiveGuard()
+        || isAdmin()
+        || (isVerifiedUser()
+          && request.resource.data.type == 'SUSPICIOUS_ENTRY'
+          && request.resource.data.reportedByUid == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // Cấu hình hệ thống (quy tắc quét lặp...)
+    match /systemConfig/{docId} {
+      allow get: if isVerifiedUser();
+      allow list: if isAdmin();
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // Nhật ký kiểm toán bất biến (append-only)
+    match /auditLogs/{eventId} {
+      allow get, list: if isAdmin();
+      allow create: if isActiveGuard() || isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

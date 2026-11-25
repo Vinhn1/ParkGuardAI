@@ -2,6 +2,54 @@
 
 > Khảo sát working tree ngày 2026-10-02. Nhãn: `IMPLEMENTED` = mã hiện diện và có tác dụng cụ thể; `PARTIAL` = mới một phần (tương ứng “đang triển khai” về mức hoàn thiện mã, **không khẳng định có người đang làm tiếp**); `PLANNED` = yêu cầu sản phẩm; `PROPOSED` = ý tưởng bổ sung; `UNKNOWN` = chưa thể xác minh. Sự hiện diện của class/dependency **không** đồng nghĩa nghiệp vụ đã chạy.
 
+## Cập nhật tái thiết kế toàn diện giao diện Warm Cream Light & Terracotta Orange ngày 2026-11-21 theo DEC-038
+
+Theo DEC-038, toàn bộ hệ thống giao diện của ứng dụng (Khởi đầu/Xác thực + 3 vai trò Sinh viên, Bảo vệ, Quản trị viên) đã được nâng cấp từ Dark Navy/Cyan sang ngôn ngữ thiết kế **Warm Cream Light & Terracotta Orange** theo mẫu tham chiếu SwiftGo của người dùng:
+- **Design System & Tokens**: Nền canvas Kem ấm (`#FAF6F0`), thẻ nội dung Trắng ngà (`#FFFFFF`), thẻ Hero Hồng đào (`#FDF1E8`), màu nhấn chính Cam Đất (`#E86A24`), chữ chính Đen than ấm (`#1C1917`), cố định chế độ Light Mode đồng nhất qua `AppCompatDelegate.MODE_NIGHT_NO`.
+- **Khối Khởi đầu & Xác thực**: `WelcomeFragment` với Poster Hero minh họa 3 trụ cột AI/Cổng/GPS + Headline lớn căn trái; `RegisterFragment` và `StudentOnboardingFragment` tích hợp thanh **Horizontal Stepper (`1 -> 2 -> 3`)**.
+- **Phân hệ Sinh viên (Student Portal)**: `StudentHomeFragment` trang bị Top Bar vị trí bãi xe, thanh tra cứu nhanh, Hero Banner phương tiện nền cam đào, **4 nút tròn lối tắt nhanh (Quick Action Circles)**, lưới Bento 2x2 trạng thái và thẻ **Vertical Timeline** lịch sử vào/ra; `StudentAddVehicleFragment` tích hợp Stepper 3 bước; `StudentViolationDetailFragment` có Timeline xử lý biên bản; `StudentProfileFragment` đồng bộ nút Đăng xuất Outlined Pill cam.
+- **Phân hệ Bảo vệ (Guard Portal) & Quản trị viên (Admin Portal)**: Đồng bộ toàn bộ thẻ kết quả quét AI, timeline quét lặp trong ngày, danh sách cảnh báo an ninh, Hero Banner trung tâm điều hành Admin, biểu đồ 7 ngày cột Cam Đất và ô tìm kiếm xe kèm nút vuông cam bên phải; giữ nguyên 100% chức năng, ID ViewBinding, AI Pipeline và nghiệp vụ hiện có.
+
+## Cập nhật phân hệ Quản trị viên (Admin Portal) ngày 2026-10-25 theo DEC-034
+
+Đã thiết kế lại và triển khai hoàn thiện 100% giao diện Native Android Java + XML View System theo đúng mẫu Dark Mode Navy/Cyan của người dùng. Cổng Quản trị viên hiện có 6 màn hình hoàn chỉnh:
+1. `AdminDashboardFragment` (`fragment_admin_dashboard.xml`): Lưới 4 thẻ KPI (128 Xe trong bãi, 7 Vi phạm hôm nay, 4/4 Camera trực tuyến, 3 Xe chưa đăng ký), biểu đồ 7 ngày (cột T5 active Cyan), thẻ Dự báo AI gợi ý ca trực, danh mục Vi phạm mới nhất và Bottom Navigation 5 tab.
+2. `AdminViolationsFragment` (`fragment_admin_violations.xml`): Quản lý vi phạm với 4 Segmented Tabs (Tất cả, Chưa xử lý, Xem xét, Đã xử lý), 2 thẻ tóm tắt (Tuần này: 24, Chưa xử lý: 7) và danh sách thẻ vi phạm màu Đỏ/Vàng/Xanh.
+3. `AdminVerificationQueueFragment` (`fragment_admin_verification_queue.xml`): Xe đã đăng ký với thanh tìm kiếm, 3 Tabs (Đã duyệt, Chờ duyệt, Bị khoá), danh sách phương tiện và 2 nút đáy (Duyệt nhanh, Thêm xe).
+4. `AdminMoreFragment` (`fragment_admin_more.xml`): Quy tắc quét lặp với bộ chọn thời gian đọc trùng (30s, 60s, 120s), 4 công tắc an ninh (Vào/ra xen kẽ, Bảo vệ xác nhận, Báo nghi sao chép, Giới hạn lượt vào) và nút Lưu quy tắc.
+5. `AdminUsersFragment` (`fragment_admin_users.xml`): Quản lý người dùng & bảo vệ với bộ lọc (Tất cả, Bảo vệ, Sinh viên), 2 thẻ nhân sự ca trực, danh sách bảo vệ và nút nổi bật **"Tạo tài khoản bảo vệ"**.
+6. `AdminCreateGuardFragment` (`fragment_admin_create_guard.xml`): Biểu mẫu chuyên biệt cấp tài khoản bảo vệ gồm Họ tên, Mã nhân viên (BV-xx), SĐT, Email cấp, Mật khẩu khởi tạo, Segmented Ca trực (Sáng/Chiều/Đêm), Chip chọn Cổng/Khu vực phụ trách và Dialog bàn giao thông tin.
+
+Bằng chứng kiểm thử: `:app:assembleDebug` đạt (`BUILD SUCCESSFUL in 47s`). Đã cài đặt APK lên thiết bị thật `lzp7ytz5v87dei5p` và chụp ảnh xác nhận toàn bộ 5 tab và luồng tạo tài khoản bảo vệ hiển thị hoàn hảo.
+
+## Cập nhật liên kết Quét nhanh sang Chụp ảnh vi phạm ngày 2026-10-06 theo DEC-029
+
+Theo DEC-029, tab Quét nhanh trên thanh điều hướng dưới và các nút lối tắt trên Trang chủ được kết nối trực tiếp để mở màn Chụp ảnh vi phạm (`GuardCameraFragment`), gỡ bỏ màn quét riêng (`GuardQuickScanFragment`). Toàn bộ khả năng AI (`PlateDetector` TFLite và `PlateTextReader` ML Kit Latin bundled) được chuyển sang chạy trực tiếp trên ảnh chính đã chụp tại màn Rà soát (`GuardReviewFragment`). Khi nạp ảnh chính, AI tự nhận diện vùng biển số, đặt vị trí khung cắt `CropSelectionView` và OCR điền trước biển số gợi ý; khi bảo vệ kéo cắt lại thủ công, OCR tự động đọc lại trên vùng ảnh mới. Bảo vệ giữ toàn quyền chỉnh sửa và xác nhận trước khi gửi.
+
+## Cập nhật luồng Quét nhanh ngày 2026-10-06 theo DEC-028 (đã thay thế bởi DEC-029)
+
+Sau khi quét, màn Quét nhanh có lối sang Camera chụp **ảnh chính mới**. Ảnh quét bị bỏ ngay khi chuyển; biển số đã sửa và hợp lệ được mang theo như gợi ý đến bước rà soát ảnh chính, không tự lưu vào bản nháp. Màn xác nhận hiển thị văn bản ghi nhận xem trước gồm biển số, hành vi bảo vệ chọn, giờ/vị trí gắn ảnh chính và ghi chú. Chọn hành vi là bắt buộc; model/OCR không chọn hộ. Hồ sơ vẫn chỉ được gửi sau khi ảnh chính có vị trí đạt ngưỡng và bảo vệ xác nhận. `:app:assembleDebug` và `:app:lintDebug` đạt trên Windows JDK/SDK; lint 0 lỗi, 17 cảnh báo. Hành vi trên thiết bị thật `UNKNOWN`.
+
+## Cập nhật giao diện ngày 2026-10-06 theo DEC-027
+
+Người dùng xác nhận ảnh mẫu trong `docs/reference-images/` là khung bố cục, yêu cầu palette và thành phần UI mới cùng chuyển động phù hợp. Mã đã làm mới trang chủ/sổ/cá nhân bảo vệ, quét nhanh, bản đồ, camera, rà soát và chi tiết bằng token sáng/tối xanh ngọc, Material cards, nhãn trạng thái và chuyển động ngắn có kiểm cài đặt animation. Sổ vi phạm có tìm kiếm/lọc tại chỗ trong tập hồ sơ đã được trả về, không mở rộng quyền hoặc giới hạn 50 hồ sơ. Xuất PDF, lớp tạo PDF, FileProvider và resource dành riêng cho PDF đã được gỡ; chi tiết hồ sơ vẫn hiển thị trong app. Dữ liệu/thao tác minh họa không có nghiệp vụ trong ảnh mẫu không được thêm. `:app:assembleDebug` và `:app:lintDebug` đạt trên Windows JDK/SDK ngày 2026-10-06; lint 0 lỗi, 17 cảnh báo. Chưa kiểm tra bằng thiết bị thật, màn hình nhỏ, cỡ chữ lớn hoặc TalkBack.
+
+## Cập nhật working tree ngày 2026-10-06
+
+Theo DEC-025/026, role bảo vệ có mã cho năm tab: Trang chủ, Sổ vi phạm, Quét nhanh, Bản đồ, Cá nhân. Quét nhanh dùng CameraX trong bộ nhớ, detector TFLite và OCR ML Kit Latin bundled để gợi ý biển số có thể sửa, không lưu ảnh hay tạo hồ sơ. Bản đồ dùng MapLibre style demo cho pilot, lấy tối đa 50 hồ sơ của guard trong scope được phép, chỉ hiện vị trí `AUTO_ACCEPTED`. [`Bản thiết kế và kết quả`](20-GUARD-FIVE-TAB-PROPOSAL.md) ghi giới hạn cụ thể. Các thư mục trống liên quan AI/camera đã được dùng bởi chức năng thực tế; các khung khác vẫn rỗng khi chưa có nghiệp vụ được duyệt.
+
+`:app:assembleDebug` và `:app:lintDebug` **đạt** ngày 2026-10-06 với JDK/SDK trên Windows; lint 0 lỗi, 21 cảnh báo. Model TFLite đã đo shape/dtype trực tiếp và suy luận trên ảnh đồng nhất ở Linux, chưa đánh giá ảnh biển thật. Chưa có bằng chứng chạy trên thiết bị Android, triển khai Rules hoặc cấp grant cho bảo vệ; runtime các luồng đó vẫn `UNKNOWN`. Các mục khảo sát 2026-10-02 trong bảng dưới là ảnh chụp lịch sử, không dùng làm trạng thái mới nhất.
+
+## Cập nhật working tree ngày 2026-10-05
+
+**Phản hồi chạy thử mới:** người dùng đã tạo tài khoản Firebase Authentication cho bảo vệ và xác minh email trên thiết bị thật, nhưng xác nhận chưa làm một hoặc cả hai bước tạo `accessGrants/{UID}` và Publish Firestore Rules. Lần đăng nhập hiện dừng ở đọc grant từ server; mã trước đó gộp lỗi Rules/quyền vào thông báo kiểm tra mạng. Mã đã được sửa để làm mới ID token và phân biệt lỗi `PERMISSION_DENIED` với lỗi mạng; bản sửa chưa được người dùng build/thử lại. Quyền bảo vệ runtime vẫn `PARTIAL` cho đến khi grant và Rules hoạt động trên project thật.
+
+**Cập nhật phân hệ Bảo vệ (Guard Portal - DEC-035):** Đã thiết lập hoàn chỉnh 8 màn hình/dialog theo mẫu Dark Navy/Cyan/Rose, bao gồm: Quét camera AI (`GuardCameraFragment`), Ghi nhận vi phạm (`GuardViolationFormFragment`), Lịch sử quét (`GuardHistoryFragment`), Quét nhiều xe (`GuardMultiVehicleScanFragment`), Xe quét lại trong ngày (`GuardRescanAlertFragment`), Cảnh báo an ninh bãi xe (`GuardAlertsFragment`), Ca trực & Hồ sơ (`GuardProfileFragment`) và BottomSheet Nhập biển số thủ công (`GuardManualEntryBottomSheet`). Bản build debug đã hoàn thành thành công (`BUILD SUCCESSFUL in 47s`), cài đặt lên thiết bị thật `lzp7ytz5v87dei5p` và chụp ảnh màn hình nghiệm thu đầy đủ (xem chi tiết tại [`docs/26-GUARD-PORTAL-REDESIGN-PLAN.md`](26-GUARD-PORTAL-REDESIGN-PLAN.md)).
+
+Theo DEC-017–020, working tree có Splash → trang chào → đăng nhập/đăng ký Firebase Auth email/mật khẩu, gửi/gửi lại và kiểm tra email xác minh; sau xác minh có form bắt buộc nhập hồ sơ sinh viên và xe đầu tiên. Giao dịch Firestore tạo `users/{uid}`, xe tự khai và yêu cầu xác minh `PENDING`; file Rules giới hạn người tạo, field và trạng thái, chưa deploy/test trên dự án thật. Form Auth chỉ thu email/mật khẩu/nhập lại; không thu mã sinh viên. Launcher debug và shell/tab role mẫu đã được xóa. Phần mô tả role bảo vệ ở đoạn cập nhật phía trên thay thế trạng thái kế hoạch ảnh trước đó.
+
+`assembleDebug` và `lintDebug` từng đạt cho lát UI cũ. Lần build sau thay đổi Auth thất bại ngay vì môi trường Linux không có `java`/`JAVA_HOME`. Người dùng báo đã thử thành công trên **thiết bị thật** bước đăng ký sinh viên bằng email và lưu dữ liệu Firebase/Firestore, đồng thời đã tạo Firestore; đây là bằng chứng do người dùng cung cấp, chưa phải kết quả kiểm thử do agent tự chạy và chưa xác minh Rules đã triển khai. Những chức năng bảo vệ, Storage và GPS vẫn `UNKNOWN` về runtime. Người dùng không yêu cầu kiểm thử bằng emulator. [Báo cáo giao diện](17-UI-IMPLEMENTATION-REPORT.md) ghi phạm vi và giới hạn hiện tại. Bảng kiểm kê bên dưới là ảnh chụp mốc 2026-10-02, chỉ dùng làm lịch sử khảo sát.
+
 ## Git, cấu trúc và môi trường
 
 - Nhánh `dev`, theo dõi `origin/dev`, lúc khảo sát không báo chênh lệch commit. Trước khi tạo tài liệu, working tree đã sửa 15 đường dẫn mã/cấu hình; asset mô hình đã stage, `nav_graph.xml` có cả phần stage và chưa stage. Các thay đổi này không do nhiệm vụ tài liệu tạo ra. Nguồn: `git status --short --branch`, `git status --porcelain=v2 --branch` ngày 2026-10-02.

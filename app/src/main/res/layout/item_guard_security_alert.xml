@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardAlertRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="@color/surface_800"
+    app:cardCornerRadius="16dp"
+    app:strokeColor="@color/outline"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- Hàng 1: Icon + Tiêu đề cảnh báo + Badge mức độ + Thời gian -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivAlertIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_alert_triangle"
+                app:tint="@color/violation_red" />
+
+            <TextView
+                android:id="@+id/tvAlertTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                android:textColor="@color/violation_red"
+                android:textStyle="bold"
+                tools:text="Nghi vấn biển số giả / Trùng xe" />
+
+            <TextView
+                android:id="@+id/badgeAlertSeverity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_warning_amber"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="@color/accent_amber"
+                android:textStyle="bold"
+                tools:text="Khẩn cấp" />
+
+            <TextView
+                android:id="@+id/tvAlertTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="@color/text_muted"
+                tools:text="2 phút trước" />
+        </LinearLayout>
+
+        <!-- Hàng 2: Biển số xe nổi bật & Vị trí phát hiện -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Khung biển số xe -->
+            <TextView
+                android:id="@+id/tvAlertPlate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_plate_display_box"
+                android:letterSpacing="0.06"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                tools:text="48-B1 999.99" />
+
+            <!-- Vị trí phát hiện -->
+            <TextView
+                android:id="@+id/tvAlertLocation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="@color/accent_cyan"
+                tools:text="Cổng chính • Bãi xe A" />
+        </LinearLayout>
+
+        <!-- Hàng 3: Nội dung chi tiết cảnh báo -->
+        <TextView
+            android:id="@+id/tvAlertDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="2dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="@color/text_secondary"
+            tools:text="Biển số 48-B1 999.99 chưa đăng ký tài khoản trong hệ thống đã vào bãi lúc 13:45. Nghi vấn gửi xe trái phép." />
+
+        <!-- Hàng 4: Thông tin xử lý (chỉ hiện khi đã xử lý) -->
+        <LinearLayout
+            android:id="@+id/layoutAlertResolvedInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_button_dark_card"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="6dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_shield_check"
+                app:tint="#10B981" />
+
+            <TextView
+                android:id="@+id/tvAlertResolvedNote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Đã xử lý an toàn"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="#10B981"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Hàng 5: Nút hành động xử lý (ẩn khi đã xử lý) -->
+        <LinearLayout
+            android:id="@+id/layoutAlertActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAlertResolve"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_marginEnd="8dp"
+                android:paddingHorizontal="12dp"
+                android:text="Đã xử lý"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="@color/accent_cyan"
+                android:textStyle="bold"
+                app:cornerRadius="19dp"
+                app:strokeColor="@color/outline"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAlertHandle"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:backgroundTint="@color/violation_red"
+                android:paddingHorizontal="14dp"
+                android:text="Kiểm tra xe"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                app:cornerRadius="19dp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

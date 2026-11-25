@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/adminDashboardFragment" android:icon="@drawable/ic_guard_home" android:title="@string/admin_nav_dashboard" />
+    <item android:id="@+id/adminViolationsFragment" android:icon="@drawable/ic_student_violation" android:title="@string/admin_nav_violations" />
+    <item android:id="@+id/adminVerificationQueueFragment" android:icon="@drawable/ic_student_vehicle" android:title="@string/admin_nav_vehicles" />
+    <item android:id="@+id/adminUsersFragment" android:icon="@drawable/ic_guard_profile" android:title="@string/admin_nav_users" />
+    <item android:id="@+id/adminMoreFragment" android:icon="@drawable/ic_admin_settings" android:title="@string/admin_nav_settings" />
+</menu>

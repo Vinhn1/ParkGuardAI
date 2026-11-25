@@ -1,6 +1,12 @@
 # 07 — Quy tắc UI/UX và Design System
 
-> Giao diện hiện tại chỉ có NavHost và theme Material3 nền; [`colors.xml`](../app/src/main/res/values/colors.xml) mới có đen/trắng, [`strings.xml`](../app/src/main/res/values/strings.xml) mới có tên app. Các token dưới đây là **quy tắc đề xuất**, chưa phải màu/nhận diện chính thức của Trường Đại học Cửu Long. Không thay giao diện đã hoàn thành khi chưa duyệt.
+> Cập nhật 2026-10-22 theo DEC-031: người dùng duyệt chuyển toàn ứng dụng sang palette Navy/Cyan của canvas trong [tracker 23](23-UI-IMPLEMENTATION-TASK-TRACKER.md). Đây là palette của sản phẩm, không phải màu/nhận diện chính thức của Trường Đại học Cửu Long. Java/XML/ViewBinding và Material 3 vẫn là nền tảng.
+
+## Hướng triển khai từ ảnh mẫu
+
+Giữ cấu trúc tác vụ nổi bật → số liệu thật → lối vào nhanh → hồ sơ gần đây cho trang chủ; danh sách bản nháp và hồ sơ máy chủ cho Sổ vi phạm; camera/quét, bản đồ và tài khoản theo chức năng đã được duyệt. Không dùng số liệu, ảnh hiện trường, tên người, tình trạng khóa xe hoặc dịch vụ Google/Gemini giả trong ảnh mẫu làm dữ liệu app. Token màu Navy/Cyan nằm trong `values/colors.xml` và `values-night/colors.xml`; nền thẻ và nhãn trạng thái có tương phản ở cả hai chế độ. Chuyển tab và kết quả quét dùng fade/slide khoảng 220 ms, kiểm tra `ValueAnimator.areAnimatorsEnabled()` trước khi chạy. Camera chỉ dùng chuyển động ở phần tác vụ sau chụp để không làm xao nhãng khi căn ảnh.
+
+Theo DEC-028, lối từ Quét nhanh sang lập hồ sơ phải nói rõ ảnh quét bị bỏ và cần chụp ảnh chính mới. Biển số chuyển tiếp chỉ là gợi ý để đối chiếu; màn rà soát yêu cầu bảo vệ chọn hành vi, rồi hiển thị văn bản ghi nhận **xem trước, chưa gửi**. Không đặt sẵn hành vi vi phạm từ ảnh quét hoặc từ giá trị mặc định của form.
 
 ## Nguyên tắc và quy trình duyệt màn hình
 
@@ -51,7 +57,9 @@ Khi thêm ảnh bằng chứng, giao diện đánh dấu rõ ảnh nào là **�
 | Danh sách vi phạm | Xem hồ sơ được liên kết hợp lệ theo thời gian | S được cấp quyền từng hồ sơ | List phân trang; empty, offline, quyền đã thu |
 | Chi tiết vi phạm | Xem ảnh, thời gian, khu vực/vị trí được phép và trạng thái | S được cấp quyền từng hồ sơ/ảnh | Card bằng chứng, timeline; file lỗi/quyền bị từ chối |
 
-#### Wireframe đăng ký email trên Spark — chờ duyệt trước khi viết XML
+#### Wireframe onboarding đầy đủ trên Spark — phần sau tạo danh tính còn chờ chính sách
+
+**Cập nhật DEC-017–020 (2026-10-05):** bước tạo danh tính Auth chỉ có email, mật khẩu và nhập lại; sau email xác minh là form bắt buộc cho họ tên, số liên hệ tùy chọn chưa xác minh và xe đầu tiên (loại xe + biển số). Mã sinh viên chưa thu. Hồ sơ, xe tự khai và yêu cầu `PENDING` được ghi bằng giao dịch Firestore khi Rules cho phép; không tự liên kết `VERIFIED`. Nội dung thông báo, đồng ý và hạn lưu giữ vẫn chờ DEC-006 trước vận hành thật. Wireframe cũ dưới đây là lịch sử phác thảo, không phản ánh bố cục hiện tại.
 
 ```text
 Đăng ký tài khoản sinh viên

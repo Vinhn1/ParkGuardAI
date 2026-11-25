@@ -6,16 +6,16 @@
 
 ```mermaid
 flowchart TD
-  A[Mở đăng ký] --> B[Nhập họ tên, email, mật khẩu và dữ liệu theo chính sách]
-  B --> C{Form hợp lệ, đã đồng ý xử lý dữ liệu?}
+  A[Mở đăng ký] --> B[Nhập email, mật khẩu, nhập lại]
+  B --> C{Form Auth hợp lệ?}
   C -- Không --> D[Hiện lỗi bên trường, giữ dữ liệu hợp lệ]
   D --> B
-  C -- Có --> E[Tạo danh tính STUDENT trong Firebase Auth, profile Firestore không có password]
+  C -- Có --> E[Tạo danh tính Firebase Auth, chưa cấp vai trò]
   E --> F{Trùng hoặc thất bại?}
   F -- Có --> G[Thông báo phù hợp, chống lộ tài khoản]
   F -- Không --> H[Xác minh email]
-  H --> I[Đăng ký ít nhất một phương tiện để hoàn tất onboarding]
-  I --> J[Gửi vehicleVerificationRequest PENDING vào Firestore]
+  H --> I[Nhập họ tên, phone tùy chọn, loại xe và biển số đầu tiên]
+  I --> J[Giao dịch Firestore: hồ sơ, xe tự khai, request PENDING]
   J --> K{Biển số xung đột?}
   K -- Có --> L[Chờ xét duyệt, không lộ chủ tài khoản khác]
   K -- Không --> M[Chờ xác minh]
@@ -24,7 +24,7 @@ flowchart TD
   N --> O[VERIFIED hoặc REJECTED có lý do; thông báo sinh viên]
 ```
 
-Số điện thoại là liên hệ tùy chọn và **chưa xác minh** trên Firebase Spark: form không có bước SMS OTP; nếu để trống vẫn tiếp tục, nếu cung cấp phải hiện nhãn chưa xác minh và không dùng làm định danh đăng nhập/khôi phục. Email phải được Firebase Auth xác minh trước bước đăng ký xe. Mã sinh viên chỉ thu nếu có nguồn xác minh được duyệt. Khi mất mạng lúc đăng ký, không thông báo đã tạo tài khoản/profile/xe nếu chưa có xác nhận server. Tài khoản Auth tạo xong nhưng profile Firestore chưa hoàn tất cần trạng thái phục hồi, không tạo vai trò ADMIN. Hai yêu cầu cùng biển số có thể cùng `PENDING`; **duyệt `VERIFIED`** phải bảo đảm chỉ một claim hiệu lực bằng transaction/backend đáng tin cậy. Không chuyển hồ sơ cũ cho chủ mới. Xem [Requirements](01-PRODUCT-REQUIREMENTS.md), [Database](04-DATABASE-DESIGN.md), DEC-004/007 tại [Decision Log](15-DECISION-LOG.md).
+Số điện thoại là liên hệ tùy chọn và **chưa xác minh** trên Firebase Spark: form không có bước SMS OTP; nếu để trống vẫn tiếp tục, nếu cung cấp phải hiện nhãn chưa xác minh và không dùng làm định danh đăng nhập/khôi phục. Theo DEC-019, email phải được Firebase Auth xác minh trước bước **bắt buộc** nhập hồ sơ và ít nhất một xe/biển số; xe chỉ thành yêu cầu `PENDING`. Mã sinh viên chưa thu theo DEC-007B. Khi mất mạng lúc đăng ký, không thông báo đã tạo tài khoản/profile/xe nếu chưa có xác nhận server. Tài khoản Auth tạo xong nhưng profile Firestore chưa hoàn tất cần trạng thái phục hồi, không tạo vai trò ADMIN. Hai yêu cầu cùng biển số có thể cùng `PENDING`; **duyệt `VERIFIED`** phải bảo đảm chỉ một claim hiệu lực bằng transaction/backend đáng tin cậy. Không chuyển hồ sơ cũ cho chủ mới. Xem [Requirements](01-PRODUCT-REQUIREMENTS.md), [Database](04-DATABASE-DESIGN.md), DEC-004/007/019 tại [Decision Log](15-DECISION-LOG.md).
 
 ## Bảo vệ: ghi nhận vi phạm
 
@@ -59,6 +59,8 @@ flowchart TD
 ```
 
 Không phát hiện biển số: cho chụp lại/nhập tay, không đặt biển số giả. Nhiều biển số: người dùng chọn vùng, không lấy mặc định confidence cao nhất. OCR không hợp lệ: hiển thị nguyên gợi ý để đối chiếu, đánh dấu nguồn `MANUAL_CORRECTION`. Ảnh mờ: yêu cầu ảnh khác nếu không đủ bằng chứng. Quyền vị trí bị từ chối, dịch vụ tắt, timeout, fix quá cũ hoặc sai số lớn: cảnh báo, không ghi `0,0`, không tự lấy vị trí khi lưu; cho thử lại/chụp lại hoặc chọn khu vực thủ công **nếu DEC-008A duyệt**. Khi thoát trước xác nhận: hỏi lưu/hủy bản nháp, xóa ảnh tạm theo chính sách. Lưu thất bại: trạng thái chưa gửi và mã idempotency, không tạo trùng khi retry.
+
+**Nhánh Quét nhanh theo DEC-028:** quét ảnh trong bộ nhớ → bảo vệ xem/sửa biển số gợi ý → chọn lập hồ sơ → bỏ ảnh quét → chụp ảnh chính mới và lấy vị trí theo DEC-008A → rà lại biển số trên ảnh chính, chọn hành vi đã quan sát → xem văn bản ghi nhận trước khi gửi → gửi hồ sơ sau xác nhận máy chủ. Nếu biển số từ Quét nhanh không đạt định dạng, không chuyển gợi ý và vẫn cho nhập tay ở bước rà soát. Không dùng ảnh quét/vị trí lúc quét làm bằng chứng của hồ sơ.
 
 **Ảnh chính và nhiều ảnh:** ảnh chụp đầu tiên được chọn làm ảnh chính, có `primaryEvidenceId`, `capturedAt` và snapshot vị trí riêng. Ảnh bổ sung có thời điểm/metadata riêng và không thay snapshot vị trí hồ sơ. Nếu đổi ảnh chính, bảo vệ phải chọn tường minh; hệ thống rà lại vị trí của ảnh mới, hiển thị thay đổi, và ghi audit nếu hồ sơ đã lưu. Nếu bảo vệ di chuyển sau ảnh chính, vị trí đo muộn không được gắn ngược vào ảnh cũ khi vượt ngưỡng chênh thời gian; phải chụp lại hoặc theo ngoại lệ thủ công đã duyệt.
 

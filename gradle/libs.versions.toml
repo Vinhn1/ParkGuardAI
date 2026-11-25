@@ -11,6 +11,14 @@ constraintlayout = "2.2.2"
 navigation = "2.9.7"
 tensorflowLite = "2.17.0"
 firebaseBom = "34.19.0"
+googleServices = "4.5.0"
+coreSplashscreen = "1.2.0"
+camera = "1.6.2"
+playServicesLocation = "21.4.0"
+cloudinaryAndroid = "3.1.2"
+mlKitTextRecognition = "16.0.1"
+mapLibre = "11.8.0"
+biometric = "1.1.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -28,6 +36,18 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 tensorflow-lite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflowLite" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
+camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "camera" }
+camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camera" }
+camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camera" }
+camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camera" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+cloudinary-android-core = { group = "com.cloudinary", name = "cloudinary-android-core", version.ref = "cloudinaryAndroid" }
+mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlKitTextRecognition" }
+maplibre-android = { group = "org.maplibre.gl", name = "android-sdk", version.ref = "mapLibre" }
+biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/guard_nav_home"
+        android:icon="@drawable/ic_guard_home"
+        android:title="@string/guard_nav_home" />
+    <item
+        android:id="@+id/guard_nav_quick_scan"
+        android:icon="@drawable/ic_guard_quick_scan"
+        android:title="@string/guard_nav_quick_scan" />
+    <item
+        android:id="@+id/guard_nav_records"
+        android:icon="@drawable/ic_guard_records"
+        android:title="@string/guard_nav_records" />
+    <item
+        android:id="@+id/guard_nav_map"
+        android:icon="@drawable/ic_guard_map"
+        android:title="@string/guard_nav_map" />
+    <item
+        android:id="@+id/guard_nav_profile"
+        android:icon="@drawable/ic_guard_profile"
+        android:title="@string/guard_nav_profile" />
+</menu>

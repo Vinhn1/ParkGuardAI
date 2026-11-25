@@ -1,5 +1,7 @@
 # 09 — Bảo mật và quyền riêng tư
 
+> **Cập nhật pilot 2026-10-05:** ảnh bằng chứng hiện đi qua Cloudinary unsigned theo DEC-024, thay phần Firebase Storage của ADR-001. `secure_url` là HTTPS nhưng ảnh trên CDN không được Firestore Rules bảo vệ; người có URL có thể truy cập. Unsigned preset công khai có nguy cơ upload lạm dụng và app không thể xóa ảnh mồ côi mà không có backend đặc quyền. Chỉ dùng dữ liệu thử chưa nhạy cảm cho đến khi có backend ký upload/URL, giới hạn quyền ảnh, audit và chính sách giữ/xóa được duyệt. Bản nháp chỉ xóa thủ công theo DEC-006A, không TTL/xóa lúc đăng xuất. Các mô tả Storage/TTL bên dưới là mục tiêu lịch sử, chưa phải kiểm soát đang vận hành.
+
 > ADR-001 đã chọn Firebase Authentication, Cloud Firestore và Firebase Cloud Storage; repository đã có Firebase Auth SDK/datasource email nhưng **chưa có** Firebase Project, Firestore/Storage SDK, Security Rules hoặc kho ảnh. [`AndroidManifest.xml`](../app/src/main/AndroidManifest.xml) đang bật backup với [`backup_rules.xml`](../app/src/main/res/xml/backup_rules.xml) và [`data_extraction_rules.xml`](../app/src/main/res/xml/data_extraction_rules.xml) còn là mẫu. Quy định pháp lý cần được người phụ trách pháp chế rà soát trước vận hành.
 
 ## Dữ liệu, tác nhân và rủi ro

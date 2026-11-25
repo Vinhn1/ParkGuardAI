@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
+         android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="@dimen/pg_page_padding">
+            <com.google.android.material.button.MaterialButton
+            android:id="@+id/backButton" style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content" android:layout_height="@dimen/pg_touch_target"
+            android:text="@string/action_back" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pg_space_large"
+                android:text="@string/admin_violation_detail_title"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+                android:textColor="@color/pg_on_surface" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pg_space_small"
+                android:text="@string/admin_violation_detail_description"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                android:textColor="@color/pg_on_surface_muted" />
+            <!-- Thẻ Biên bản -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pg_space_medium"
+                app:cardBackgroundColor="@color/pg_surface_card"
+                app:cardCornerRadius="20dp"
+                app:strokeColor="@color/error_red"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/pg_space_large">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textViolationPlate"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="monospace"
+                            android:text="--"
+                            android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+                            android:textColor="@color/accent_cyan" />
+
+                        <TextView
+                            android:id="@+id/textViolationStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_badge_status"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"
+                            android:text="CHƯA XỬ LÝ"
+                            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                            android:textColor="@color/error_red" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textViolationDetailInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Đang tải chi tiết biên bản..."
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:textColor="@color/pg_on_surface" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card Ảnh hiện trường -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pg_space_medium"
+                app:cardBackgroundColor="@color/bg_navy_900"
+                app:cardCornerRadius="20dp"
+                app:strokeColor="@color/pg_outline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/pg_space_medium">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Bằng chứng ảnh hiện trường &amp; AI Detection"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        android:textColor="@color/pg_on_surface" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="@dimen/pg_space_small"
+                        android:background="@color/bg_navy_950">
+
+                        <ImageView
+                            android:id="@+id/imgViolationEvidence"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/bg_parkguard_hero"
+                            android:contentDescription="Ảnh hiện trường vi phạm" />
+
+                        <TextView
+                            android:id="@+id/textEvidenceOverlay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:layout_marginBottom="8dp"
+                            android:background="#CC020618"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:text="Đang tải ảnh hiện trường..."
+                            android:gravity="center"
+                            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                            android:textColor="@color/accent_cyan" />
+                    </FrameLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Nút hành động xử lý vi phạm -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pg_space_xlarge"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/confirmPaidButton"
+                    style="@style/Widget.ParkGuard.Button.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/pg_button_height"
+                    android:text="Xác nhận đã thu phí xử phạt" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancelViolationButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/pg_button_height"
+                    android:layout_marginTop="@dimen/pg_space_small"
+                    android:text="Hủy bỏ biên bản (Miễn trừ / Sai sót)"
+                    android:textColor="@color/error_red"
+                    app:strokeColor="@color/error_red" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    
+</LinearLayout>

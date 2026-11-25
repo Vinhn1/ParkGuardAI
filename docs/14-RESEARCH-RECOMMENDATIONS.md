@@ -36,6 +36,7 @@ Mỗi dòng có: vấn đề → giải pháp → lợi ích → rủi ro → ư
 | REC-12 Mở rộng hệ thống | Phân trang, chỉ mục theo quyền/thời gian, đo read/write/ảnh và quota; tránh tăng chi phí bất ngờ | Tối ưu quá sớm tạo phức tạp | P1; Trung bình; DEC-001, pilot traffic; **Có** |
 | REC-13 Pháp lý và bảo vệ PII | Pháp chế trường rà thông báo, cơ sở xử lý, nhà cung cấp, vị trí dữ liệu và thời hạn; giảm rủi ro vận hành | Chậm tiến độ, cần phối hợp nhiều bên | P0; Cao về phối hợp; DEC-001/006, pháp chế; **Có** |
 | REC-14 Yêu cầu xem xét lại | Form đề nghị và luồng phản hồi tách hồ sơ gốc; tăng công bằng cho sinh viên | Tăng tải xử lý và nghĩa vụ phản hồi | P2 `PROPOSED`; Trung bình; chính sách xử lý; **Có** |
+| REC-16 Quét nhiều xe theo đợt | Chế độ Chụp liên hoàn (Batch Capture) tại hiện trường + AI xử lý ngầm + Rà soát hàng loạt ([chi tiết tại 21](21-MULTI-VEHICLE-SCAN-PROPOSAL.md)); giải quyết ùn ứ khi có cả dãy xe vi phạm mà không làm giảm chất lượng bằng chứng pháp lý | Tăng dung lượng lưu tạm trên máy, cần quản lý bộ nhớ RAM thumbnail và hàng đợi tải lên | P1 `PROPOSED`; Trung bình; DEC-008A, CameraX, UI rà soát theo đợt; **Có** |
 
 ## Bằng chứng và giới hạn nghiên cứu
 

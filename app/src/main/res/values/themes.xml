@@ -1,9 +1,29 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ParkGuardAI" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+    <style name="Base.Theme.ParkGuardAI" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/pg_primary</item>
+        <item name="colorOnPrimary">@color/pg_on_primary</item>
+        <item name="colorSecondary">@color/pg_secondary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/pg_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/pg_on_primary_container</item>
+        <item name="colorSurface">@color/pg_surface</item>
+        <item name="colorSurfaceVariant">@color/pg_surface_card</item>
+        <item name="colorOnSurface">@color/pg_on_surface</item>
+        <item name="colorOutline">@color/pg_outline</item>
+        <item name="colorError">@color/pg_error</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:statusBarColor">@color/pg_bg_canvas</item>
+        <item name="android:navigationBarColor">@color/surface_900</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowBackground">@color/pg_bg_canvas</item>
     </style>
 
     <style name="Theme.ParkGuardAI" parent="Base.Theme.ParkGuardAI" />
+
+    <style name="Theme.ParkGuardAI.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/pg_bg_canvas</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_parkguard_mark</item>
+        <item name="postSplashScreenTheme">@style/Theme.ParkGuardAI</item>
+    </style>
 </resources>

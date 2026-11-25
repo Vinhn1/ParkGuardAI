@@ -37,4 +37,4 @@ Theo thông tin dự án cung cấp, mô hình YOLO11n đã huấn luyện trên
 
 ## Cách đọc bộ tài liệu
 
-[Yêu cầu](01-PRODUCT-REQUIREMENTS.md) → [vai trò/quyền](02-USER-ROLES-PERMISSIONS.md) → [luồng](03-USER-FLOWS.md) → [dữ liệu](04-DATABASE-DESIGN.md) → [kiến trúc](05-SYSTEM-ARCHITECTURE.md). Đối chiếu mọi đề xuất với [hiện trạng](13-CURRENT-PROJECT-STATUS.md), [nghiên cứu](14-RESEARCH-RECOMMENDATIONS.md) và [Decision Log](15-DECISION-LOG.md) trước khi viết code.
+[Yêu cầu](01-PRODUCT-REQUIREMENTS.md) → [vai trò/quyền](02-USER-ROLES-PERMISSIONS.md) → [luồng](03-USER-FLOWS.md) → [dữ liệu](04-DATABASE-DESIGN.md) → [kiến trúc](05-SYSTEM-ARCHITECTURE.md) → [chạy ứng dụng](22-DEVICE-SETUP-AND-RUN-GUIDE.md). Đối chiếu mọi đề xuất với [hiện trạng](13-CURRENT-PROJECT-STATUS.md), [nghiên cứu](14-RESEARCH-RECOMMENDATIONS.md) và [Decision Log](15-DECISION-LOG.md) trước khi viết code.

@@ -1,6 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
 
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.parkguardai.ui.auth.LoginFragment"
+        android:label="@string/auth_login_title">
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/pg_enter"
+            app:exitAnim="@anim/pg_exit"
+            app:popEnterAnim="@anim/pg_enter"
+            app:popExitAnim="@anim/pg_exit" />
+        <action
+            android:id="@+id/action_login_to_onboarding"
+            app:destination="@id/studentOnboardingFragment"
+            app:enterAnim="@anim/pg_enter"
+            app:exitAnim="@anim/pg_exit" />
+        <action
+            android:id="@+id/action_login_to_guard"
+            app:destination="@id/guardCameraFragment"
+            app:enterAnim="@anim/pg_enter"
+            app:exitAnim="@anim/pg_exit" />
+        <action
+            android:id="@+id/action_login_to_student"
+            app:destination="@id/studentHomeFragment"
+            app:enterAnim="@anim/pg_enter"
+            app:exitAnim="@anim/pg_exit" />
+        <action
+            android:id="@+id/action_login_to_admin"
+            app:destination="@id/adminDashboardFragment"
+            app:enterAnim="@anim/pg_enter"
+            app:exitAnim="@anim/pg_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.parkguardai.ui.auth.RegisterFragment"
+        android:label="@string/auth_register_title">
+        <action
+            android:id="@+id/action_register_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/pg_enter"
+            app:exitAnim="@anim/pg_exit" />
+        <action
+            android:id="@+id/action_register_to_onboarding"
+            app:destination="@id/studentOnboardingFragment"
+            app:enterAnim="@anim/pg_enter"
+            app:exitAnim="@anim/pg_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/studentOnboardingFragment"
+        android:name="com.example.parkguardai.ui.auth.StudentOnboardingFragment"
+        android:label="@string/onboarding_title" />
+
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="com.example.parkguardai.ui.auth.ForgotPasswordFragment"
+        android:label="@string/auth_forgot_title" />
+    <fragment
+        android:id="@+id/resetSentFragment"
+        android:name="com.example.parkguardai.ui.auth.ResetSentFragment"
+        android:label="@string/auth_reset_title" />
+    <fragment
+        android:id="@+id/accessGateFragment"
+        android:name="com.example.parkguardai.ui.auth.AccessGateFragment"
+        android:label="@string/auth_access_gate_title" />
+    <fragment
+        android:id="@+id/registrationSubmittedFragment"
+        android:name="com.example.parkguardai.ui.auth.RegistrationSubmittedFragment"
+        android:label="@string/auth_registration_submitted_title" />
+    <fragment
+        android:id="@+id/studentHomeFragment"
+        android:name="com.example.parkguardai.ui.student.StudentHomeFragment"
+        android:label="@string/student_home_title" />
+    <fragment
+        android:id="@+id/studentVehiclesFragment"
+        android:name="com.example.parkguardai.ui.student.StudentVehiclesFragment"
+        android:label="@string/student_vehicles_title" />
+    <fragment
+        android:id="@+id/studentViolationsFragment"
+        android:name="com.example.parkguardai.ui.student.StudentViolationsFragment"
+        android:label="@string/student_violations_title" />
+    <fragment
+        android:id="@+id/studentProfileFragment"
+        android:name="com.example.parkguardai.ui.student.StudentProfileFragment"
+        android:label="@string/student_profile_title" />
+    <fragment
+        android:id="@+id/studentNotificationsFragment"
+        android:name="com.example.parkguardai.ui.student.StudentNotificationsFragment"
+        android:label="@string/student_nav_notifications" />
+    <fragment
+        android:id="@+id/studentParkingHistoryFragment"
+        android:name="com.example.parkguardai.ui.student.StudentParkingHistoryFragment"
+        android:label="@string/student_history_title" />
+    <fragment
+        android:id="@+id/studentAddVehicleFragment"
+        android:name="com.example.parkguardai.ui.student.StudentAddVehicleFragment"
+        android:label="@string/student_add_vehicle_title" />
+    <fragment
+        android:id="@+id/studentVehicleDetailFragment"
+        android:name="com.example.parkguardai.ui.student.StudentVehicleDetailFragment"
+        android:label="@string/student_vehicle_detail_title" />
+    <fragment
+        android:id="@+id/studentViolationDetailFragment"
+        android:name="com.example.parkguardai.ui.student.StudentViolationDetailFragment"
+        android:label="@string/student_violation_detail_title" />
+    <fragment
+        android:id="@+id/studentEvidenceViewerFragment"
+        android:name="com.example.parkguardai.ui.student.StudentEvidenceViewerFragment"
+        android:label="@string/student_evidence_viewer_title" />
+    <fragment
+        android:id="@+id/studentEditProfileFragment"
+        android:name="com.example.parkguardai.ui.student.StudentEditProfileFragment"
+        android:label="@string/student_edit_profile_title" />
+    <fragment
+        android:id="@+id/studentSettingsFragment"
+        android:name="com.example.parkguardai.ui.student.StudentSettingsFragment"
+        android:label="@string/student_settings_title" />
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.example.parkguardai.ui.common.ChangePasswordFragment"
+        android:label="@string/common_change_password_title" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.parkguardai.ui.common.AboutFragment"
+        android:label="@string/common_about_title" />
+    <fragment
+        android:id="@+id/privacyFragment"
+        android:name="com.example.parkguardai.ui.common.PrivacyFragment"
+        android:label="@string/common_privacy_title" />
+
+    <fragment
+        android:id="@+id/guardHomeFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardHomeFragment"
+        android:label="@string/guard_home_title">
+        <action
+            android:id="@+id/action_guard_to_camera"
+            app:destination="@id/guardCameraFragment"
+            app:enterAnim="@anim/pg_enter"
+            app:exitAnim="@anim/pg_exit" />
+        <action
+            android:id="@+id/action_guard_to_review"
+            app:destination="@id/guardReviewFragment" />
+        <action
+            android:id="@+id/action_guard_to_detail"
+            app:destination="@id/guardDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/guardCameraFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardCameraFragment"
+        android:label="@string/guard_camera_title">
+        <action
+            android:id="@+id/action_camera_to_review"
+            app:destination="@id/guardReviewFragment" />
+        <action
+            android:id="@+id/action_camera_to_rescan"
+            app:destination="@id/guardRescanAlertFragment" />
+        <action
+            android:id="@+id/action_camera_to_multi"
+            app:destination="@id/guardMultiVehicleScanFragment" />
+        <action
+            android:id="@+id/action_camera_to_violation_form"
+            app:destination="@id/guardViolationFormFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/guardReviewFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardReviewFragment"
+        android:label="@string/guard_review_title">
+        <action
+            android:id="@+id/action_review_to_detail"
+            app:destination="@id/guardDetailFragment"
+            app:popUpTo="@id/guardCameraFragment" />
+    </fragment>
+ 
+    <fragment
+        android:id="@+id/guardDetailFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardDetailFragment"
+        android:label="@string/guard_detail_title" />
+
+    <fragment
+        android:id="@+id/guardViolationFormFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardViolationFormFragment"
+        android:label="@string/guard_violation_title" />
+
+    <fragment
+        android:id="@+id/guardHistoryFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardHistoryFragment"
+        android:label="@string/guard_history_title">
+        <action
+            android:id="@+id/action_history_to_detail"
+            app:destination="@id/guardDetailFragment" />
+        <action
+            android:id="@+id/action_history_to_rescan"
+            app:destination="@id/guardRescanAlertFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/guardMultiVehicleScanFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardMultiVehicleScanFragment"
+        android:label="@string/guard_multi_title">
+        <action
+            android:id="@+id/action_multi_to_review"
+            app:destination="@id/guardReviewFragment" />
+        <action
+            android:id="@+id/action_multi_to_rescan"
+            app:destination="@id/guardRescanAlertFragment" />
+        <action
+            android:id="@+id/action_multi_to_violation_form"
+            app:destination="@id/guardViolationFormFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/guardRescanAlertFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardRescanAlertFragment"
+        android:label="@string/guard_rescan_title">
+        <action
+            android:id="@+id/action_rescan_to_review"
+            app:destination="@id/guardReviewFragment" />
+        <action
+            android:id="@+id/action_rescan_to_violation_form"
+            app:destination="@id/guardViolationFormFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/guardAlertsFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardAlertsFragment"
+        android:label="@string/guard_alerts_title" />
+
+    <fragment
+        android:id="@+id/guardProfileFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardProfileFragment"
+        android:label="@string/guard_profile_title" />
+
+    <fragment
+        android:id="@+id/guardMapFragment"
+        android:name="com.example.parkguardai.ui.guard.GuardMapFragment"
+        android:label="@string/guard_map_title" />
+
+    <fragment
+        android:id="@+id/adminDashboardFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminDashboardFragment"
+        android:label="@string/admin_dashboard_title" />
+    <fragment
+        android:id="@+id/adminVerificationQueueFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminVerificationQueueFragment"
+        android:label="@string/admin_verification_queue_title" />
+    <fragment
+        android:id="@+id/adminVerificationDetailFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminVerificationDetailFragment"
+        android:label="@string/admin_verification_detail_title" />
+    <fragment
+        android:id="@+id/adminVerificationSuccessFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminVerificationSuccessFragment"
+        android:label="@string/admin_verification_success_title" />
+    <fragment
+        android:id="@+id/adminUsersFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminUsersFragment"
+        android:label="@string/admin_users_title" />
+    <fragment
+        android:id="@+id/adminUserDetailFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminUserDetailFragment"
+        android:label="@string/admin_user_detail_title" />
+    <fragment
+        android:id="@+id/adminViolationsFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminViolationsFragment"
+        android:label="@string/admin_violations_title" />
+    <fragment
+        android:id="@+id/adminViolationDetailFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminViolationDetailFragment"
+        android:label="@string/admin_violation_detail_title" />
+    <fragment
+        android:id="@+id/adminViolationTypesFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminViolationTypesFragment"
+        android:label="@string/admin_violation_types_title" />
+    <fragment
+        android:id="@+id/adminStatisticsFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminStatisticsFragment"
+        android:label="@string/admin_statistics_title" />
+    <fragment
+        android:id="@+id/adminAuditLogFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminAuditLogFragment"
+        android:label="@string/admin_audit_log_title" />
+    <fragment
+        android:id="@+id/adminMoreFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminMoreFragment"
+        android:label="@string/admin_more_title" />
+    <fragment
+        android:id="@+id/adminCreateGuardFragment"
+        android:name="com.example.parkguardai.ui.admin.AdminCreateGuardFragment"
+        android:label="@string/admin_create_guard_title" />
 </navigation>

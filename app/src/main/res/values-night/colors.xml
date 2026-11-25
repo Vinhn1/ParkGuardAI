@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF1C1917</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Warm Cream Light & Terracotta Orange Design System (DEC-038) -->
+    <color name="pg_bg_canvas">#FAF6F0</color>
+    <color name="pg_bg_secondary">#F4EDE2</color>
+    <color name="pg_surface_peach">#FDF1E8</color>
+    <color name="pg_primary_orange">#E86A24</color>
+    <color name="pg_primary_orange_dark">#C85212</color>
+    <color name="pg_primary_orange_soft">#FDE6D5</color>
+    <color name="pg_outline_warm">#EAE0D5</color>
+    <color name="pg_outline_active">#E86A24</color>
+
+    <color name="bg_navy_950">#FAF6F0</color>
+    <color name="bg_navy_900">#F4EDE2</color>
+    <color name="bg_navy_850">#FDF1E8</color>
+    <color name="surface_900">#FFFFFF</color>
+    <color name="surface_800">#FBF8F3</color>
+    <color name="surface_700">#E8DCCB</color>
+    <color name="outline">#EAE0D5</color>
+
+    <color name="primary_blue">#E86A24</color>
+    <color name="accent_cyan">#E86A24</color>
+    <color name="pg_cyan">#E86A24</color>
+    <color name="brand_teal">#16A34A</color>
+    <color name="accent_amber">#D97706</color>
+    <color name="success_green">#16A34A</color>
+    <color name="warn_yellow">#D97706</color>
+    <color name="error_red">#DC2626</color>
+    <color name="violation_red">#DC2626</color>
+    <color name="error_red_text_light">#B91C1C</color>
+
+    <color name="text_primary">#1C1917</color>
+    <color name="text_secondary">#57504B</color>
+    <color name="text_muted">#8A7F77</color>
+
+    <color name="pg_primary">#E86A24</color>
+    <color name="pg_on_primary">#FFFFFFFF</color>
+    <color name="pg_surface">#FAF6F0</color>
+    <color name="pg_surface_card">#FFFFFF</color>
+    <color name="pg_on_surface">#1C1917</color>
+    <color name="pg_on_surface_muted">#6E655F</color>
+    <color name="pg_outline">#EAE0D5</color>
+    <color name="pg_error">#DC2626</color>
+    <color name="pg_hero_start">#FDECE2</color>
+    <color name="pg_hero_end">#F9D8C2</color>
+    <color name="pg_accent">#E86A24</color>
+    <color name="pg_on_hero">#1C1917</color>
+    <color name="pg_secondary">#E86A24</color>
+    <color name="pg_hero_accent">#E86A24</color>
+    <color name="pg_primary_container">#FDE6D5</color>
+    <color name="pg_on_primary_container">#1C1917</color>
+    <color name="pg_warning">#D97706</color>
+    <color name="pg_warning_container">#FEF3C7</color>
+    <color name="pg_success">#16A34A</color>
+    <color name="pg_success_bg">#DCFCE7</color>
+    <color name="pg_error_bg">#FEE2E2</color>
+    <color name="pg_warning_bg">#FEF3C7</color>
+
+    <color name="pg_space_cadet">#FAF6F0</color>
+    <color name="pg_card_dark">#FFFFFF</color>
+    <color name="pg_card_dark_elevated">#F4EDE2</color>
+    <color name="pg_border_subtle">#EAE0D5</color>
+    <color name="pg_emerald">#16A34A</color>
+</resources>

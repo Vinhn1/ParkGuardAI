@@ -27,6 +27,7 @@ public class FirebaseEmailAuthDataSource {
      */
     public FirebaseEmailAuthDataSource(FirebaseAuth auth) {
         this.auth = Objects.requireNonNull(auth, "auth");
+        this.auth.setLanguageCode("vi");
     }
 
     /**

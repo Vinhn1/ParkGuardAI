@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * Biểu diễn metadata hồ sơ tại violations/{violationId}.
- * Bằng chứng ảnh nằm ở ViolationEvidence và Cloud Storage; các trường vị trí
+ * Bằng chứng ảnh nằm ở ViolationEvidence và Cloudinary; các trường vị trí
  * dưới đây là bản sao của ảnh chính để truy vấn, phải khớp snapshot ảnh chính.
  * Model không tự kết luận vi phạm hoặc xác định chủ xe từ biển số.
  */

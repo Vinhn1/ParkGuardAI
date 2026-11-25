@@ -17,6 +17,11 @@ public enum VehicleType {
     MOTORBIKE,
 
     /**
+     * Xe đạp điện.
+     */
+    ELECTRIC_BIKE,
+
+    /**
      * Ô tô.
      */
     CAR

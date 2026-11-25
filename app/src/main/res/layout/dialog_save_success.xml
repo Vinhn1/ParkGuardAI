@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:background="@drawable/bg_card_surface"
+    android:orientation="vertical" android:padding="@dimen/pg_space_large">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/guard_save_success_title"
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+        android:textColor="@color/pg_on_surface" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pg_space_small"
+        android:text="@string/guard_save_success_description"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        android:textColor="@color/pg_on_surface_muted" />
+</LinearLayout>

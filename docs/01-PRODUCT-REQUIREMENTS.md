@@ -16,7 +16,7 @@
 | Email | Bắt buộc, cần xác minh quyền truy cập | Chuẩn hóa để chống trùng theo chính sách; xác minh trước tính năng cá nhân nhạy cảm |
 | Số điện thoại | Tùy chọn theo DEC-007, chỉ để liên hệ; **chưa xác minh** trên bản Spark | Nếu cung cấp thì kiểm định dạng trước lưu; hiển thị rõ chưa xác minh, không dùng để đăng nhập, khôi phục tài khoản, chống trùng định danh hay chứng minh quyền xe |
 | Mật khẩu + nhập lại | Bắt buộc nếu chọn đăng nhập mật khẩu; chỉ đi qua dịch vụ xác thực | So khớp ở form, chính sách mật khẩu theo nhà cung cấp; không ghi vào model/log/database ứng dụng |
-| Mã số sinh viên | `OPEN` DEC-007B; chỉ thu khi có nguồn xác minh phù hợp | Tránh tạo cảm giác đã xác minh chỉ vì người dùng tự nhập; không công khai |
+| Mã số sinh viên | Chưa thu ở phiên bản hiện tại theo DEC-007B | Nếu cần sau này, chốt nguồn đối chiếu và quy trình trước khi thêm trường |
 | Phương tiện ban đầu | Bắt buộc **ít nhất một yêu cầu đăng ký xe để hoàn tất onboarding** theo ADR-004, sau bước xác minh đăng nhập | Tài khoản có thể tạm thời chưa có xe khi đang dở quy trình; về sau thêm nhiều xe, từng xe xác minh thủ công |
 | Đồng ý xử lý dữ liệu | Bắt buộc trước thu thập vượt dữ liệu cần cho xác thực | Ghi phiên bản thông báo, thời điểm, mục đích; thiết kế cách rút/yêu cầu xử lý theo chính sách đã duyệt |
 
@@ -72,4 +72,4 @@ Trong bảng: S = `STUDENT`, G = `SECURITY_GUARD`, A = `ADMIN` dự kiến; “h
 
 ## Điểm chưa quyết định
 
-Mã sinh viên có thu/xác minh thế nào (DEC-007B); chứng cứ tối thiểu/quyền duyệt xe chi tiết; hồ sơ `PENDING` có hiển thị sinh viên không; **ngưỡng sai số, tuổi fix, chênh thời gian, timeout, yêu cầu quyền precise và quy trình vị trí thủ công**; thời hạn giữ ảnh/vị trí/audit; ML Kit bundled hay unbundled; môi trường backend đáng tin cậy cho nghiệp vụ đặc quyền. Email xác minh và phone liên hệ tùy chọn đã được chọn cho bản Spark; Fused Location Provider còn là phương án kỹ thuật GPS. Xem [Decision Log](15-DECISION-LOG.md).
+Chứng cứ tối thiểu/quyền duyệt xe chi tiết; hồ sơ `PENDING` có hiển thị sinh viên không; **ngưỡng sai số, tuổi fix, chênh thời gian, timeout, yêu cầu quyền precise và quy trình vị trí thủ công**; thời hạn giữ ảnh/vị trí/audit; ML Kit bundled hay unbundled; môi trường backend đáng tin cậy cho nghiệp vụ đặc quyền. Email xác minh và phone liên hệ tùy chọn đã được chọn cho bản Spark; mã sinh viên chưa thu theo DEC-007B; Fused Location Provider còn là phương án kỹ thuật GPS. Xem [Decision Log](15-DECISION-LOG.md).

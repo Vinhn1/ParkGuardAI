@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/pg_primary_container" />
+    <stroke android:width="@dimen/pg_stroke_width" android:color="@color/pg_outline" />
+    <corners android:radius="@dimen/pg_card_radius" />
+</shape>

@@ -50,9 +50,14 @@ public class VehicleRecord {
     private String color;
 
     /**
-     * Khóa ảnh phương tiện trong Storage, không phải URL công khai.
+     * Trường di sản cho ảnh phương tiện; luồng đăng ký xe hiện chưa thu ảnh.
      */
     private String photoObjectKey;
+
+    /**
+     * Khóa/đường dẫn ảnh cà vẹt xe (giấy tờ đăng ký xe) phục vụ xét duyệt.
+     */
+    private String registrationCardPhotoKey;
 
     /**
      * UID tài khoản đã tạo bản ghi; không đồng nghĩa là chủ đã xác minh.
@@ -177,6 +182,14 @@ public class VehicleRecord {
 
     public void setPhotoObjectKey(String photoObjectKey) {
         this.photoObjectKey = photoObjectKey;
+    }
+
+    public String getRegistrationCardPhotoKey() {
+        return registrationCardPhotoKey;
+    }
+
+    public void setRegistrationCardPhotoKey(String registrationCardPhotoKey) {
+        this.registrationCardPhotoKey = registrationCardPhotoKey;
     }
 
     public String getCreatedBy() {

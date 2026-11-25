@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="@dimen/pg_page_padding">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/backButton" style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content" android:layout_height="@dimen/pg_touch_target"
+            android:text="@string/action_back" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pg_space_large"
+            android:text="@string/student_evidence_viewer_title"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+            android:textColor="@color/pg_on_surface" />
+        <!-- Khung ảnh hiện trường -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pg_space_medium"
+            app:cardBackgroundColor="@color/bg_navy_900"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="@color/pg_outline"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    android:background="@color/bg_navy_950">
+
+                    <!-- Ảnh chụp hiện trường xe vi phạm (tải từ Cloudinary) -->
+                    <ImageView
+                        android:id="@+id/evidenceImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/bg_parkguard_hero"
+                        android:contentDescription="Ảnh bằng chứng vi phạm" />
+
+                    <!-- Nhãn biển số xác nhận -->
+                    <LinearLayout
+                        android:id="@+id/plateBadgeOverlay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:layout_margin="12dp"
+                        android:background="#CC020618"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvEvidencePlate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="monospace"
+                            android:text="--"
+                            android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                            android:textColor="@color/accent_cyan"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Watermark GPS & Thời gian thật -->
+                    <TextView
+                        android:id="@+id/tvEvidenceWatermark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|start"
+                        android:layout_margin="12dp"
+                        android:background="#AA020618"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp"
+                        android:text=""
+                        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                        android:textColor="@color/pg_on_surface" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/pg_space_medium">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ảnh gốc không qua chỉnh sửa"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                        android:textColor="@color/pg_on_surface" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Ảnh được gắn siêu dữ liệu mã hóa thời gian chụp thực tế và tọa độ GPS của thiết bị tại thời điểm lập biên bản."
+                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                        android:textColor="@color/pg_on_surface_muted" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>

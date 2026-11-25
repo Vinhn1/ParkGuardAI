@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pg_surface"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/pg_page_padding">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/backButton"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/pg_touch_target"
+                android:text="@string/action_back" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pg_space_small"
+                android:text="@string/admin_audit_log_title"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+                android:textColor="@color/pg_on_surface" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pg_space_xsmall"
+                android:text="Mọi thao tác quản trị, thẩm định và xử phạt đều được ghi vết bất biến kèm mã xác thực toàn vẹn."
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textColor="@color/pg_on_surface_muted" />
+
+            <!-- Danh sách các sự kiện Audit Log động từ Cloud Firestore -->
+            <LinearLayout
+                android:id="@+id/auditLogContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pg_space_large"
+                android:orientation="vertical" />
+
+            <!-- Nút xuất báo cáo -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/exportLogButton"
+                style="@style/Widget.ParkGuard.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pg_button_height"
+                android:layout_marginTop="@dimen/pg_space_xlarge"
+                android:layout_marginBottom="@dimen/pg_space_large"
+                android:text="Xuất báo cáo kiểm toán (CSV)" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+

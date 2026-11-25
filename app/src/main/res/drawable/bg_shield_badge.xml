@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Nền hình tròn/bo góc màu cam đào dịu -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="10dp" />
+            <solid android:color="@color/pg_primary_orange_soft" />
+            <stroke
+                android:width="1.2dp"
+                android:color="@color/pg_primary_orange" />
+        </shape>
+    </item>
+    <!-- Biểu tượng Khiên ParkGuard AI ở trung tâm -->
+    <item
+        android:bottom="5dp"
+        android:drawable="@drawable/ic_parkguard_mark"
+        android:left="5dp"
+        android:right="5dp"
+        android:top="5dp" />
+</layer-list>

@@ -9,6 +9,7 @@ local.properties
 /build/
 /app/build/
 /captures/
+node_modules/
 
 .externalNativeBuild/
 .cxx/
@@ -74,3 +75,7 @@ Thumbs.db
 *.log
 *.tmp
 *.temp
+/screen_*.png
+/test_*.png
+*.py
+*.docx

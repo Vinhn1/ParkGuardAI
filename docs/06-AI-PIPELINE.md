@@ -1,6 +1,10 @@
 # 06 — Pipeline Camera, YOLO11n và OCR
 
-> `PARTIAL`: repository có [`parkguard_yolo11n_best.tflite`](../app/src/main/assets/parkguard_yolo11n_best.tflite) (10.626.664 byte, đầu file `TFL3`) và dependency TensorFlow Lite trong [`app/build.gradle.kts`](../app/build.gradle.kts). ADR-002 đã chọn **Google ML Kit Text Recognition để thử nghiệm OCR**, nhưng chưa có CameraX, lớp suy luận, ML Kit hoặc test model trong code. Tên file và thông tin huấn luyện do dự án cung cấp **không đủ** xác định kiểu/shape tensor hay phép hậu xử lý.
+> `PARTIAL`, cập nhật 2026-10-06: repository có [`parkguard_yolo11n_best.tflite`](../app/src/main/assets/parkguard_yolo11n_best.tflite) (10.626.664 byte, đầu file `TFL3`), [`PlateDetector`](../app/src/main/java/com/example/parkguardai/ai/detection/PlateDetector.java) và ML Kit Latin bundled trong [`PlateTextReader`](../app/src/main/java/com/example/parkguardai/ai/ocr/PlateTextReader.java). Quét nhanh đã nối camera → detector → OCR ở bộ nhớ và cho sửa kết quả. Theo DEC-028, chỉ biển số hợp lệ được chuyển làm gợi ý sang luồng chụp ảnh chính mới; ảnh quét không là bằng chứng. Bảo vệ chọn hành vi và xem văn bản ghi nhận trước khi gửi. Build và lint đạt; chất lượng trên ảnh biển thật và hiệu năng Android chưa được đo.
+
+**Đo trực tiếp FlatBuffer ngày 2026-10-06:** asset có SHA-256 `f2735814b03e6df5f0c8c3e195a53bade43b58236f1a343532342016720efb50`, schema `TFL3` version 3, một subgraph, một input `serving_default_args_0` shape `[1,3,640,640]` và một output `serving_default_output_0_output` shape `[1,5,8400]`; cả hai có TensorType `FLOAT32` (enum 0), không có scale/zero point. Đọc theo [schema TensorFlow Lite](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/compiler/mlir/lite/schema/schema_v3b.fbs). Đây là cấu trúc tensor; phần diễn giải output và hiệu năng cần thêm đo đạc bên dưới.
+
+**Đo Interpreter trên máy Linux ngày 2026-10-06:** `ai-edge-litert 2.1.4` tải và chạy model thành công với input/output đúng thông tin trên. Sáu lần suy luận trên ảnh đồng nhất 0 và 1, CPU 2 thread, mất 55,9–80,9 ms; đây **không phải** độ trễ thiết bị Android hay số liệu chất lượng nhận diện. Hai ảnh đồng nhất không tạo score đáng kể (cao nhất khoảng 0,0014). `metadata.json` đính kèm trong asset ghi Ultralytics 8.4.171, task `detect`, một class `license_plate`, `end2end=false`, ảnh 640×640 và license `AGPL-3.0`. Theo [mã export Ultralytics](https://github.com/ultralytics/ultralytics/blob/main/ultralytics/utils/export/engine.py), `_NormalizeCoords` chia 4 kênh box theo kích thước input; kết hợp shape `[1,5,8400]` và một class, **suy luận** output là `(cx, cy, w, h, score)` chuẩn hóa, chưa xác nhận trên ảnh biển số thật. Chưa có số liệu RGB/BGR, phép resize/letterbox và ngưỡng NMS từ chính ảnh mẫu; cần thử trên thiết bị và ảnh mẫu trước khi công bố kết quả AI đáng tin.
 
 ## Phạm vi AI và hợp đồng dữ liệu
 
@@ -21,11 +25,11 @@ Mô hình YOLO11n được mô tả là **phát hiện vùng chứa biển số*
 - Chỉ lưu ảnh gốc cần làm bằng chứng và crop nếu có mục đích; xóa ảnh tạm theo chính sách. Ảnh gốc có metadata thời gian/nguồn, hash sau upload; crop là dẫn xuất, không thay thế ảnh hiện trường.
 - Ảnh chính phải có `capturedAt` và snapshot vị trí từ lần chụp đó; ảnh bổ sung không được ghi đè. Nếu camera trả callback lưu file muộn, không coi thời điểm callback là thời điểm chụp. Nguồn timestamp chụp và độ trễ phải được kiểm thử với [CameraX ImageCapture](https://developer.android.com/media/camera/camerax/take-photo); xem [kiến trúc](05-SYSTEM-ARCHITECTURE.md) cho kiểm tuổi fix.
 
-## ML Kit OCR đã chọn để thử nghiệm; chi tiết còn mở
+## ML Kit OCR cho pilot; tiêu chí chất lượng còn mở
 
 | Biến thể/kế hoạch | Lợi ích | Rủi ro/chi phí | Điều kiện đánh giá |
 |---|---|---|---|
-| ML Kit Text Recognition v2 Latin **bundled** | Chạy on-device, sẵn ngay kể cả offline; phù hợp pilot ổn định | Tăng kích thước app; chưa có bằng chứng chính xác trên biển xe máy Việt Nam | So sánh app size, latency và full-plate accuracy; lựa chọn bundled/unbundled còn mở |
+| ML Kit Text Recognition v2 Latin **bundled** — đã chọn theo DEC-026 | Chạy on-device, sẵn ngay kể cả offline; phù hợp pilot ổn định | Tăng kích thước app; chưa có bằng chứng chính xác trên biển xe máy Việt Nam | Đo app size, latency và full-plate accuracy trên thiết bị, ảnh thực địa |
 | ML Kit Latin **unbundled** | App nhỏ hơn | Cần tải model ban đầu, camera có thể chưa đọc được OCR khi chưa tải xong | Chỉ chọn nếu chấp nhận bước chuẩn bị/tải model và thông báo trạng thái |
 | OCR tùy biến hoặc server | **Phương án dự phòng nghiên cứu**, chưa được duyệt thay ML Kit | Thêm dữ liệu huấn luyện, hạ tầng/PII, chi phí và quyết định mới | Chỉ trình lại nếu pilot ML Kit không đạt tiêu chí đã duyệt |
 
@@ -43,3 +47,10 @@ Mô hình YOLO11n được mô tả là **phát hiện vùng chứa biển số*
 | Thiết bị nóng/thiếu RAM | Giảm tần suất/độ phân giải theo phép thử đã được duyệt, tránh crash, đo lại chất lượng. |
 
 Đo detection precision/recall theo box và mAP trên bộ thực địa tách khỏi training; OCR dùng character error rate, full-plate accuracy, tỷ lệ cần sửa; đo tỷ lệ hoàn tất hồ sơ, latency p50/p95, RAM đỉnh, pin/nhiệt và failure theo loại thiết bị. Chưa đặt mục tiêu số vì chưa có thiết bị/tập thực địa được duyệt. Báo cả sai sót theo ánh sáng, loại biển và độ phân giải. Xem [Testing Strategy](11-TESTING-STRATEGY.md).
+
+## Lưu ý về bài toán nhận diện nhiều xe vi phạm (Multi-Vehicle Pipeline)
+Khi mở rộng sang xử lý cụm nhiều xe vi phạm theo [Nghiên cứu 21](21-MULTI-VEHICLE-SCAN-PROPOSAL.md):
+- **Không suy luận liên tục trên luồng preview video:** Tránh quá tải CPU, tụt FPS và quá nhiệt phần cứng.
+- **Xử lý tuần tự trên luồng nền (Worker Queue):** Mỗi ảnh chụp trong đợt được xử lý tách biệt lần lượt (`PlateDetector` -> `PlateTextReader`).
+- **Bảo toàn bằng chứng pháp lý:** Mỗi xe có ảnh gốc riêng và tọa độ GPS gắn liền tại thời điểm bấm máy của xe đó; ảnh crop biển số chỉ là dẫn xuất hỗ trợ rà soát.
+

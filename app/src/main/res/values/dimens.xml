@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="pg_page_padding">24dp</dimen>
+    <dimen name="pg_space_small">8dp</dimen>
+    <dimen name="pg_space_medium">16dp</dimen>
+    <dimen name="pg_space_large">24dp</dimen>
+    <dimen name="pg_space_xlarge">32dp</dimen>
+    <dimen name="pg_touch_target">48dp</dimen>
+    <dimen name="pg_button_height">56dp</dimen>
+    <dimen name="pg_card_radius">24dp</dimen>
+    <dimen name="pg_space_xsmall">4dp</dimen>
+    <dimen name="pg_space_base">12dp</dimen>
+    <dimen name="pg_radius_small">8dp</dimen>
+    <dimen name="pg_radius_medium">12dp</dimen>
+    <dimen name="pg_radius_card">16dp</dimen>
+    <dimen name="pg_radius_large">20dp</dimen>
+    <dimen name="pg_stroke_width">1dp</dimen>
+    <dimen name="pg_plate_text_size">20sp</dimen>
+    <dimen name="pg_caption_text_size">12sp</dimen>
+    <dimen name="pg_icon_small">32dp</dimen>
+    <dimen name="pg_icon_medium">64dp</dimen>
+    <dimen name="pg_icon_large">72dp</dimen>
+    <dimen name="pg_welcome_visual_height">198dp</dimen>
+    <dimen name="pg_welcome_orbit_outer">158dp</dimen>
+    <dimen name="pg_welcome_orbit_inner">138dp</dimen>
+    <dimen name="pg_welcome_mark_frame">118dp</dimen>
+    <dimen name="pg_welcome_mark">76dp</dimen>
+    <dimen name="pg_welcome_header_icon">40dp</dimen>
+    <dimen name="pg_welcome_title_size">29sp</dimen>
+    <dimen name="pg_welcome_description_size">15sp</dimen>
+</resources>

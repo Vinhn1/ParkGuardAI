@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_navy_950"
+    android:orientation="vertical">
+
+    <!-- Top Header: Logo ParkGuard AI + Badge Bảo vệ -->
+    <LinearLayout
+        android:id="@+id/topHeaderBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/bg_shield_badge" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_button_dark_card"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="5dp"
+            android:text="@string/guard_badge_role"
+            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+            android:textColor="@color/accent_cyan"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Main Viewport Area (Container chính giữa Header và BottomNav) -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- 1. GIAO DIỆN CAMERA QUÉT RỘNG (Trạng thái quét khi chưa chụp hoặc bấm Quét lại) -->
+        <LinearLayout
+            android:id="@+id/layoutScannerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="12dp">
+
+            <!-- Khung Camera Viewfinder Mở Rộng -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCameraViewfinder"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="2dp"
+                app:cardBackgroundColor="@color/surface_900"
+                app:cardCornerRadius="20dp"
+                app:strokeColor="@color/outline"
+                app:strokeWidth="1.5dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <!-- CameraX Preview View -->
+                    <androidx.camera.view.PreviewView
+                        android:id="@+id/cameraPreviewView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <!-- Lớp phủ ánh sáng nền camera dịu mắt -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#15081028" />
+
+                    <!-- Top Bar Trên Camera: Badge Vị trí & Chuyển chế độ Quét 1 xe / Quét nhiều xe -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <!-- Badge Cổng / Vị trí -->
+                        <TextView
+                            android:id="@+id/tvCameraLocationBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_button_dark_card"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="5dp"
+                            android:text="@string/guard_camera_location_gate"
+                            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                            android:textColor="@color/accent_cyan" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
+
+                        <!-- Thanh Segmented Chuyển Chế độ Quét: [Quét 1 xe | Quét nhiều xe] -->
+                        <LinearLayout
+                            android:id="@+id/segmentedScanMode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_segmented_container"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:padding="3dp">
+
+                            <TextView
+                                android:id="@+id/btnModeSingle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_segmented_active"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:text="@string/guard_scan_single"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/btnModeMulti"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_segmented_inactive"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:text="@string/guard_scan_multi"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:textColor="@color/text_secondary" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Banner Quét Bổ Sung (Chỉ hiện khi đang Quét thêm xe thiếu) -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardAppendScanBanner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:layout_marginTop="56dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:visibility="gone"
+                        app:cardBackgroundColor="@color/pg_surface_peach"
+                        app:cardCornerRadius="14dp"
+                        app:strokeColor="@color/accent_cyan"
+                        app:strokeWidth="1.5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_vehicle_camera"
+                                app:tint="@color/accent_cyan" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tvAppendScanTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Quét bổ sung xe còn thiếu"
+                                    android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                                    android:textColor="@color/accent_cyan"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvAppendScanSubtitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Đã ghi nhận xe. Hướng camera vào xe thiếu và bấm chụp."
+                                    android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnCancelAppendScan"
+                                style="@style/Widget.Material3.Button.TextButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
+                                android:paddingHorizontal="8dp"
+                                android:text="Quay lại"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:textColor="@color/accent_cyan" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Khung Ngắm 1: Chế độ Quét 1 Xe (Viewfinder Reticle tập trung biển số) -->
+                    <LinearLayout
+                        android:id="@+id/viewfinderSingle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <FrameLayout
+                            android:layout_width="260dp"
+                            android:layout_height="100dp"
+                            android:background="@drawable/bg_viewfinder_corner"
+                            android:padding="8dp">
+
+                            <!-- Khung chữ nhật biển số trống sẵn sàng nhận diện -->
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_card_surface"
+                                android:alpha="0.25" />
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_guard_quick_scan"
+                                app:tint="@color/accent_cyan" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_button_dark_card"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="4dp"
+                            android:text="@string/guard_scan_hint_single"
+                            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                            android:textColor="@color/text_primary" />
+                    </LinearLayout>
+
+                    <!-- Khung Ngắm 2: Chế độ Quét Nhiều Xe (Góc rộng toàn cảnh, ban đầu ẩn) -->
+                    <LinearLayout
+                        android:id="@+id/viewfinderMulti"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="16dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="180dp"
+                            android:background="@drawable/bg_viewfinder_multi">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="top|center_horizontal"
+                                android:layout_marginTop="8dp"
+                                android:background="@drawable/bg_button_dark_card"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="3dp"
+                                android:text="Khu vực quét đa xe"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:textColor="@color/accent_cyan" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_button_dark_card"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="4dp"
+                            android:text="@string/guard_scan_hint_multi"
+                            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                            android:textColor="@color/text_primary" />
+                    </LinearLayout>
+
+                    <!-- Lớp phủ Loading khi đang phân tích AI (Mặc định GONE) -->
+                    <LinearLayout
+                        android:id="@+id/layoutScanningProgress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#C0081028"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <ProgressBar
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:indeterminateTint="@color/accent_cyan" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/guard_scan_analyzing"
+                            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                            android:textColor="@color/accent_cyan"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Bảng Điều Khiển Quét Dưới Camera: Shutter Button Lớn + Nhập Thủ Công -->
+            <LinearLayout
+                android:id="@+id/layoutCameraControls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingVertical="12dp">
+
+                <!-- Row chứa Nút Chụp quét lớn ở giữa và nút nhập thủ công -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Khoảng trống cân bằng bên trái -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <!-- Nút Chụp quét Shutter lớn tròn chuyên nghiệp -->
+                    <FrameLayout
+                        android:id="@+id/btnCaptureShutter"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:background="@drawable/bg_shutter_outer"
+                        android:clickable="true"
+                        android:contentDescription="Chụp ảnh quét biển số"
+                        android:focusable="true">
+
+                        <View
+                            android:layout_width="54dp"
+                            android:layout_height="54dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_shutter_inner" />
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_vehicle_camera"
+                            app:tint="@color/white" />
+                    </FrameLayout>
+
+                    <!-- Nút Nhập thủ công bên phải Shutter -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="12dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnManualPlateEntry"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:paddingHorizontal="10dp"
+                            android:text="@string/guard_btn_manual_entry"
+                            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                            android:textColor="@color/accent_cyan"
+                            app:cornerRadius="20dp"
+                            app:icon="@drawable/ic_guard_quick_scan"
+                            app:iconPadding="4dp"
+                            app:iconSize="16dp"
+                            app:iconTint="@color/accent_cyan"
+                            app:strokeColor="@color/accent_cyan"
+                            app:strokeWidth="1dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvShutterInstruction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Chạm nút chụp để nhận diện phương tiện"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                    android:textColor="@color/text_muted" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 2. GIAO DIỆN KẾT QUẢ SAU KHI QUÉT (Chỉ hiển thị sau khi quét xong - Mặc định GONE) -->
+        <ScrollView
+            android:id="@+id/scrollResultContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="16dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- 2A. Card Kết Quả Nhận Diện 1 Xe -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/resultCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/surface_900"
+                    app:cardCornerRadius="18dp"
+                    app:strokeColor="@color/outline"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <!-- Header Biển số nhận diện + Thumbnail ảnh cắt -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/guard_result_plate_title"
+                                    android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                                    android:textColor="@color/accent_cyan" />
+
+                                <!-- Biển số nhận diện thật (Không gán cứng text) -->
+                                <TextView
+                                    android:id="@+id/tvResultPlate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:letterSpacing="0.05"
+                                    android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+                                    android:textColor="@color/text_primary"
+                                    android:textStyle="bold"
+                                    tools:text="48-B1 999.99" />
+
+                                <TextView
+                                    android:id="@+id/badgePlateStatus"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:background="@drawable/bg_badge_processed"
+                                    android:paddingHorizontal="8dp"
+                                    android:paddingVertical="3dp"
+                                    android:text="@string/guard_plate_valid"
+                                    android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                    android:textColor="#10B981"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <!-- Thumbnail ảnh phương tiện / biển số cắt -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/cardResultThumbnail"
+                                android:layout_width="88dp"
+                                android:layout_height="62dp"
+                                android:layout_marginStart="8dp"
+                                app:cardBackgroundColor="@color/surface_900"
+                                app:cardCornerRadius="10dp"
+                                app:strokeColor="@color/accent_cyan"
+                                app:strokeWidth="1dp">
+
+                                <ImageView
+                                    android:id="@+id/ivResultThumbnail"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="Ảnh phương tiện vừa quét"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/bg_shield_badge" />
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+
+                        <!-- Phân cách ngang -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="10dp"
+                            android:background="@color/outline" />
+
+                        <!-- Dòng Chủ xe -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/guard_owner_label"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                                android:textColor="@color/text_muted" />
+
+                            <TextView
+                                android:id="@+id/tvResultOwnerName"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                tools:text="Nguyễn Văn A" />
+                        </LinearLayout>
+
+                        <!-- Dòng Loại xe -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/guard_vehicle_type_label"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                                android:textColor="@color/text_muted" />
+
+                            <TextView
+                                android:id="@+id/tvResultVehicleType"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                                android:textColor="@color/text_primary"
+                                tools:text="Honda Air Blade 150" />
+                        </LinearLayout>
+
+                        <!-- Dòng Vị trí GPS hiện trường (DEC-008A) -->
+                        <LinearLayout
+                            android:id="@+id/llResultLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_guard_map"
+                                app:tint="@color/accent_cyan" />
+
+                            <TextView
+                                android:id="@+id/tvResultLocation"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:layout_weight="1"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:textColor="@color/accent_cyan"
+                                tools:text="10.84124, 106.80982 · sai số 4m (Đạt chuẩn DEC-008A)" />
+                        </LinearLayout>
+
+                        <!-- Box Cảnh báo quét lặp / Vi phạm tiềm năng -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardViolationAlert"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:cardBackgroundColor="@color/surface_900"
+                            app:cardCornerRadius="10dp"
+                            app:strokeColor="#38FFB525"
+                            app:strokeWidth="1dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:padding="10dp">
+
+                                <ImageView
+                                    android:id="@+id/ivViolationIcon"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:contentDescription="@null"
+                                    android:src="@drawable/ic_alert_triangle"
+                                    app:tint="@color/accent_amber" />
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tvResultViolationTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Cảnh báo kiểm tra hiện trường"
+                                        android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                                        android:textColor="@color/accent_amber"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tvResultViolationDesc"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Phương tiện xuất hiện nhiều lần hoặc chưa đăng ký trong hệ thống."
+                                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                                        android:textColor="@color/text_secondary"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 2B. Card Kết Quả Nhận Diện ĐA XE (Chế độ quét nhiều xe) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/resultCardMulti"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/surface_900"
+                    app:cardCornerRadius="18dp"
+                    app:strokeColor="@color/outline"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/guard_multi_result_title"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvMultiCountBadge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_button_dark_card"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:text="1 xe phát hiện"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:textColor="@color/accent_cyan"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Danh sách phương tiện nhận diện được trong bãi:"
+                            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                            android:textColor="@color/text_muted" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="10dp"
+                            android:background="@color/outline" />
+
+                        <!-- Container động chứa toàn bộ danh sách xe (hỗ trợ linh hoạt 1, 2, 3, 4, 5+ xe) -->
+                        <LinearLayout
+                            android:id="@+id/layoutMultiVehicleItemsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                        <!-- Thanh công cụ bổ sung xe trong đợt quét: Quét thêm xe thiếu & Nhập thủ công -->
+                        <LinearLayout
+                            android:id="@+id/layoutMultiAppendActions"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <!-- Nút 1: Quét thêm xe thiếu (Giữ lại các xe đã phát hiện và quét nạp tiếp) -->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnMultiScanMore"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="44dp"
+                                android:layout_marginEnd="6dp"
+                                android:layout_weight="1"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
+                                android:text="Quét thêm xe"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:textColor="@color/accent_cyan"
+                                app:cornerRadius="12dp"
+                                app:icon="@drawable/ic_vehicle_camera"
+                                app:iconPadding="4dp"
+                                app:iconSize="16dp"
+                                app:iconTint="@color/accent_cyan"
+                                app:strokeColor="@color/accent_cyan"
+                                app:strokeWidth="1dp" />
+
+                            <!-- Nút 2: Nhập xe thiếu thủ công -->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnMultiAddManual"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="44dp"
+                                android:layout_marginStart="6dp"
+                                android:layout_weight="1"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
+                                android:text="+ Nhập xe thiếu"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                                android:textColor="@color/accent_cyan"
+                                app:cornerRadius="12dp"
+                                app:icon="@drawable/ic_add_cyan"
+                                app:iconPadding="4dp"
+                                app:iconSize="16dp"
+                                app:iconTint="@color/accent_cyan"
+                                app:strokeColor="@color/accent_cyan"
+                                app:strokeWidth="1dp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Nút hành động chính sau khi quét: GHI NHẬN VI PHẠM (Đỏ cảnh báo) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRecordViolation"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="12dp"
+                    android:backgroundTint="@color/error_red"
+                    android:elevation="4dp"
+                    android:text="@string/guard_btn_record_violation"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:cornerRadius="26dp"
+                    app:icon="@drawable/ic_alert_triangle"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:iconTint="@color/white" />
+
+
+                <!-- Nút Quét tiếp / Quét lại: Đưa màn hình về lại Camera Quét Rộng -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRescan"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/surface_900"
+                    android:text="@string/guard_btn_rescan"
+                    android:textColor="@color/text_primary"
+                    app:cornerRadius="24dp"
+                    app:icon="@drawable/ic_guard_quick_scan"
+                    app:iconGravity="textStart"
+                    app:iconPadding="6dp"
+                    app:iconTint="@color/text_primary"
+                    app:strokeColor="@color/outline"
+                    app:strokeWidth="1dp" />
+
+            </LinearLayout>
+        </ScrollView>
+
+    </FrameLayout>
+
+    <!-- Bottom Navigation Bar 4 Tabs (Quét / Lịch sử / Cảnh báo / Hồ sơ) -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/guardBottomNav"
+        style="@style/Widget.ParkGuard.BottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        app:menu="@menu/guard_bottom_nav" />
+
+</LinearLayout>

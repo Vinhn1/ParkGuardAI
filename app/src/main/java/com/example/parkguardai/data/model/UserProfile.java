@@ -38,6 +38,21 @@ public class UserProfile {
     private String studentCode;
 
     /**
+     * Lớp sinh viên đang theo học (ví dụ: DH21TIN01).
+     */
+    private String studentClass;
+
+    /**
+     * Mã nhân viên (dành cho vai trò Bảo vệ / Quản trị viên).
+     */
+    private String staffCode;
+
+    /**
+     * URL ảnh đại diện (tải lên Cloudinary).
+     */
+    private String avatarUrl;
+
+    /**
      * Trạng thái hồ sơ nghiệp vụ; danh mục trạng thái chi tiết chờ chính sách được duyệt.
      */
     private String accountStatus;
@@ -127,6 +142,30 @@ public class UserProfile {
 
     public void setStudentCode(String studentCode) {
         this.studentCode = studentCode;
+    }
+
+    public String getStudentClass() {
+        return studentClass;
+    }
+
+    public void setStudentClass(String studentClass) {
+        this.studentClass = studentClass;
+    }
+
+    public String getStaffCode() {
+        return staffCode;
+    }
+
+    public void setStaffCode(String staffCode) {
+        this.staffCode = staffCode;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getAccountStatus() {

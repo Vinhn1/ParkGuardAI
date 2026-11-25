@@ -4,8 +4,8 @@ import java.util.Date;
 
 /**
  * Lưu metadata của một ảnh bằng chứng thuộc hồ sơ vi phạm.
- * Ảnh gốc nằm ở Cloud Storage, còn document evidence chỉ giữ khóa
- * đối tượng và vị trí tại lúc chụp. Ảnh phụ không thay vị trí ảnh chính.
+ * Ảnh gốc và ảnh cắt nằm ở Cloudinary; Firestore chỉ giữ metadata.
+ * Ảnh phụ không thay vị trí ảnh chính.
  */
 public class ViolationEvidence {
 
@@ -29,10 +29,20 @@ public class ViolationEvidence {
      */
     private Boolean isPrimary;
 
-    /**
-     * Khóa đối tượng trong Storage, không phải URL truy cập công khai.
-     */
+    /** Khóa Storage của schema cũ; không ghi ở luồng Cloudinary mới. */
     private String objectKey;
+
+    /** HTTPS secure_url do callback upload Cloudinary trả về. */
+    private String secureUrl;
+
+    /** public_id do Cloudinary trả về để đối chiếu đối tượng. */
+    private String publicId;
+
+    /** Thời điểm upload, khác thời điểm chụp. */
+    private Date uploadedAt;
+
+    /** ORIGINAL hoặc PLATE_CROP. */
+    private String imageType;
 
     /**
      * Thời điểm chụp ảnh, khác với thời điểm upload hoặc lưu hồ sơ.
@@ -153,6 +163,18 @@ public class ViolationEvidence {
     public void setObjectKey(String objectKey) {
         this.objectKey = objectKey;
     }
+
+    public String getSecureUrl() { return secureUrl; }
+    public void setSecureUrl(String secureUrl) { this.secureUrl = secureUrl; }
+
+    public String getPublicId() { return publicId; }
+    public void setPublicId(String publicId) { this.publicId = publicId; }
+
+    public Date getUploadedAt() { return uploadedAt; }
+    public void setUploadedAt(Date uploadedAt) { this.uploadedAt = uploadedAt; }
+
+    public String getImageType() { return imageType; }
+    public void setImageType(String imageType) { this.imageType = imageType; }
 
     public Date getCapturedAt() {
         return capturedAt;

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -45,6 +46,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.core.splashscreen)
 
     // Hỗ trợ điều hướng giữa các Fragment
     implementation(libs.navigation.fragment)
@@ -57,6 +59,16 @@ dependencies {
     // Xác thực email/mật khẩu và gửi liên kết xác minh email trên Firebase Spark.
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.camera.core)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.play.services.location)
+    implementation(libs.cloudinary.android.core)
+    implementation(libs.mlkit.text.recognition)
+    implementation(libs.maplibre.android)
+    implementation(libs.biometric)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
